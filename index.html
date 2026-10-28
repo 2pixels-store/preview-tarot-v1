@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tarot · Viaje del Loco — junta v1.7</title>
+<title>Tarot · Viaje del Loco — junta v1.8</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff;color:#111}
@@ -134,7 +134,7 @@ body.night footer .note, body.night footer .seal{color:#B9B3A6}
 .btn-ghost{flex:1;background:#fff;color:#111;border:2px solid #111;border-radius:999px;padding:12px;font:inherit;font-weight:700;cursor:pointer}
 .btn-save:disabled,.btn-ghost:disabled{opacity:.55;cursor:default}
 .dealt{margin-top:18px;display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
-.dealt-card{flex:1 1 100px;max-width:160px;margin:0;text-align:center}
+.dealt-card{flex:1 1 100px;max-width:160px;margin:0;text-align:center;position:relative}
 .dealt-pos{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8A8578;font-weight:700}
 .dealt-name{font-size:14px;font-weight:800;margin-top:3px;line-height:1.2}
 .dealt-ori{display:inline-block;margin-top:6px;font-size:11px;font-weight:700;border:1.5px solid #111;border-radius:999px;padding:3px 8px}
@@ -363,6 +363,34 @@ body.night .tool-btn.on{background:#FDFBF6;color:#111}
 .dealt-front img.rev{transform:rotate(180deg)}
 @keyframes flipIn{from{transform:rotateY(180deg)}to{transform:rotateY(0deg)}}
 @media (prefers-reduced-motion:reduce){.dealt-flip{animation:none}}
+
+.shape-single .dealt-card{max-width:180px}
+.shape-three,.shape-horse{flex-wrap:nowrap}
+.shape-three .dealt-card,.shape-horse .dealt-card{flex:1 1 0;max-width:none}
+.shape-horse .dealt-card:nth-child(1){transform:rotate(-24deg) translateY(26px)}
+.shape-horse .dealt-card:nth-child(2){transform:rotate(-16deg) translateY(14px)}
+.shape-horse .dealt-card:nth-child(3){transform:rotate(-8deg) translateY(6px)}
+.shape-horse .dealt-card:nth-child(5){transform:rotate(8deg) translateY(6px)}
+.shape-horse .dealt-card:nth-child(6){transform:rotate(16deg) translateY(14px)}
+.shape-horse .dealt-card:nth-child(7){transform:rotate(24deg) translateY(26px)}
+.shape-celtic{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.shape-celtic .dealt-card{max-width:none}
+.shape-celtic .dealt-card:nth-child(1){grid-column:2;grid-row:2}
+.shape-celtic .dealt-card:nth-child(2){grid-column:2;grid-row:2;z-index:2}
+.shape-celtic .dealt-card:nth-child(3){grid-column:2;grid-row:3}
+.shape-celtic .dealt-card:nth-child(4){grid-column:1;grid-row:2}
+.shape-celtic .dealt-card:nth-child(5){grid-column:2;grid-row:1}
+.shape-celtic .dealt-card:nth-child(6){grid-column:3;grid-row:2}
+.shape-celtic .dealt-card:nth-child(7){grid-column:4;grid-row:5}
+.shape-celtic .dealt-card:nth-child(8){grid-column:4;grid-row:4}
+.shape-celtic .dealt-card:nth-child(9){grid-column:4;grid-row:3}
+.shape-celtic .dealt-card:nth-child(10){grid-column:4;grid-row:2}
+.dealt-front img.cross{transform:rotate(90deg)}
+.dealt-front img.cross.rev{transform:rotate(270deg)}
+.interp-card{display:flex;gap:14px;align-items:flex-start}
+.interp-img{width:64px;flex:none;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.interp-img.rev{transform:rotate(180deg)}
+.interp-body{min-width:0}
 </style>
 </head>
 <body>
@@ -645,7 +673,7 @@ body.night .tool-btn.on{background:#FDFBF6;color:#111}
     <div class="card">
       <div class="row">
         <span class="row-lbl" id="lblVersion">Versión</span>
-        <span class="row-val">Tarot · Viaje del Loco — junta v1.7 (2026-10-28)</span>
+        <span class="row-val">Tarot · Viaje del Loco — junta v1.8 (2026-10-28)</span>
       </div>
       <div class="row">
         <button class="rowbtn" id="noticeBtn" type="button"><span id="lblNotice">Aviso</span><span>›</span></button>
@@ -714,7 +742,7 @@ body.night .tool-btn.on{background:#FDFBF6;color:#111}
   </section>
 
   <footer>
-    <div class="note">Tarot · Viaje del Loco — junta v1.7 (2026-10-28)</div>
+    <div class="note">Tarot · Viaje del Loco — junta v1.8 (2026-10-28)</div>
     <div class="seal">Crafted in NYC</div>
   </footer>
 </div>
@@ -1246,6 +1274,7 @@ function openRitualT(id){
   $("#tRTitle").textContent = cur.name[lang];
   $("#tRSub").textContent = cur.sub[lang];
   $("#tDealtList").innerHTML = "";
+  $("#tDealtList").className = "dealt shape-" + (id === "celtic" ? "celtic" : id === "horse" ? "horse" : id === "three" ? "three" : "single");
   $("#tInterpRow").classList.add("off");
   $("#tDeckBtn").disabled = false;
   $("#tDeckLbl").textContent = I18N_T[lang].tap;
@@ -1262,10 +1291,12 @@ function dealOne(){
   if(!cur || busy || dealt >= cur.pos.es.length) return;
   const c = drawnCards[dealt];
   const pos = cur.pos[lang][dealt];
+  const cross = (cur.id === "celtic" && dealt === 1);
+  const imgCls = [c.rev ? "rev" : "", cross ? "cross" : ""].filter(Boolean).join(" ");
   const fig = document.createElement("figure");
   fig.className = "dealt-card";
   fig.innerHTML = '<div class="dealt-flip"><div class="dealt-face dealt-back"><img src="' + REVERSO_DEALT + '" alt=""></div>' +
-    '<div class="dealt-face dealt-front"><img src="' + CARD_IMG[c.es] + '" class="' + (c.rev ? 'rev' : '') + '" alt="' + esc(cardNameT(c)) + '"></div></div>' +
+    '<div class="dealt-face dealt-front"><img src="' + CARD_IMG[c.es] + '" class="' + imgCls + '" alt="' + esc(cardNameT(c)) + '"></div></div>' +
     '<figcaption><div class="dealt-pos">' + esc(pos) + '</div><div class="dealt-name">' + esc((c.n ? c.n + " · " : "") + cardNameT(c)) + '</div><span class="dealt-ori">' + esc(oriLabel(c)) + '</span></figcaption>';
   $("#tDealtList").appendChild(fig);
   dealt++;
@@ -1307,7 +1338,7 @@ $("#tInterpBtn").addEventListener("click", () => {
     ab.classList.add("off");
   }
   $("#tInterpList").innerHTML = drawnCards.map((c, i) =>
-    '<article class="interp-card"><div class="interp-pos">' + esc(cur.pos[lang][i]) + '</div><div class="interp-name">' + esc((c.n ? c.n + " · " : "") + cardNameT(c)) + " — " + esc(oriLabel(c)) + '</div><p class="interp-gloss">' + esc(c.gloss) + '</p><p class="interp-mean">' + esc(c.rev ? c.meanRev : c.mean) + "</p></article>"
+    '<article class="interp-card"><img class="interp-img' + (c.rev ? ' rev' : '') + '" src="' + CARD_IMG[c.es] + '" alt="' + esc(cardNameT(c)) + '"><div class="interp-body"><div class="interp-pos">' + esc(cur.pos[lang][i]) + '</div><div class="interp-name">' + esc((c.n ? c.n + " · " : "") + cardNameT(c)) + " — " + esc(oriLabel(c)) + '</div><p class="interp-gloss">' + esc(c.gloss) + '</p><p class="interp-mean">' + esc(c.rev ? c.meanRev : c.mean) + "</p></div></article>"
   ).join("");
   showViewT("tInterpView");
 });

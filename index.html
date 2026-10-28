@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tarot · Viaje del Loco — junta v1.8</title>
+<title>Tarot · Viaje del Loco — junta v1.9</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff;color:#111}
@@ -673,7 +673,7 @@ body.night .tool-btn.on{background:#FDFBF6;color:#111}
     <div class="card">
       <div class="row">
         <span class="row-lbl" id="lblVersion">Versión</span>
-        <span class="row-val">Tarot · Viaje del Loco — junta v1.8 (2026-10-28)</span>
+        <span class="row-val">Tarot · Viaje del Loco — junta v1.9 (2026-10-28)</span>
       </div>
       <div class="row">
         <button class="rowbtn" id="noticeBtn" type="button"><span id="lblNotice">Aviso</span><span>›</span></button>
@@ -742,7 +742,7 @@ body.night .tool-btn.on{background:#FDFBF6;color:#111}
   </section>
 
   <footer>
-    <div class="note">Tarot · Viaje del Loco — junta v1.8 (2026-10-28)</div>
+    <div class="note">Tarot · Viaje del Loco — junta v1.9 (2026-10-28)</div>
     <div class="seal">Crafted in NYC</div>
   </footer>
 </div>
@@ -886,13 +886,13 @@ const JOURNEY = [
 /* ---------- Rueda: matemática reutilizada de la muestra actual ---------- */
 const WHEEL_ITEMS = [
   {t:"Colorear", sub:"Colorea las cartas, una por día", c:"#EC1C8C",
-   ic:'<path d="M4 20l9-9"/><path d="M13 11l5-5 3 3-5 5-3-3z"/>'},
+   ic:'<path d="M15 5.1 A8 8 0 1 0 17.9 16 Q14.5 15 15.8 12.5 Q17 10.5 18.5 10 A8 8 0 0 1 15 5.1"/><circle cx="7.5" cy="8" r="1.4"/><circle cx="11" cy="7" r="1.4"/><circle cx="8.5" cy="12" r="1.4"/>'},
   {t:"Tiradas", sub:"Tu tirada de hoy te espera", c:"#0EA5E9",
-   ic:'<rect x="3" y="7" width="12" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h9v12"/>'},
+   ic:'<g stroke="#0EA5E9"><g transform="rotate(-18 8 13)"><rect x="3" y="6" width="10" height="14" rx="1.5"/></g><g transform="rotate(18 16 13)"><rect x="11" y="6" width="10" height="14" rx="1.5"/></g><rect x="7" y="3.5" width="10" height="17" rx="1.5"/><path d="M12.7 7.5 L10.3 12.8 H12 L11.3 17 L14.7 11 H12.9 Z"/></g>'},
   {t:"Journal", sub:"Escribe lo que las cartas dicen", c:"#FFC93C",
-   ic:'<path d="M6 3h9l3 3v15H6z"/><path d="M9 9h7M9 13h7M9 17h4"/>'},
+   ic:'<path d="M12 4.5 C10 3.5 6.5 3.5 4 4.5 V19 C6.5 18 10 18 12 19.5 C14 18 17.5 18 20 19 V4.5 C17.5 3.5 14 3.5 12 4.5 Z"/><path d="M12 4.5 V19.5"/>'},
   {t:"Guía", sub:"Recorre el Viaje del Loco", c:"#7FFF00",
-   ic:'<circle cx="12" cy="12" r="8.5"/><path d="M15.5 8.5l-2.5 5-4.5 1.5 2.5-5z"/>'},
+   ic:'<path d="M7 4 H14.5 A4.5 4.5 0 0 1 14.5 13 H9.5 A4.5 4.5 0 0 0 9.5 22 H17.5"/><circle cx="5" cy="4" r="0.6" stroke-width="3.2"/><circle cx="19.5" cy="22" r="1.8"/>'},
   {t:"Ajustes", sub:"Ajusta temas y tus datos", c:"#111",
    ic:'<circle cx="12" cy="12" r="3.2"/><path d="M12 3.5v2.5M12 18v2.5M3.5 12H6M18 12h2.5M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/>'}
 ];

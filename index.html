@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tarot · Viaje del Loco — junta v1.2</title>
+<title>Tarot · Viaje del Loco — junta v1.3</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff;color:#111}
@@ -606,7 +606,7 @@ body.night #refOverlayClose{background:#111;color:#FDFBF6}
     <div class="card">
       <div class="row">
         <span class="row-lbl" id="lblVersion">Versión</span>
-        <span class="row-val">Tarot · Viaje del Loco — junta v1.2 (2026-10-28)</span>
+        <span class="row-val">Tarot · Viaje del Loco — junta v1.3 (2026-10-28)</span>
       </div>
       <div class="row">
         <button class="rowbtn" id="noticeBtn" type="button"><span id="lblNotice">Aviso</span><span>›</span></button>
@@ -673,7 +673,7 @@ body.night #refOverlayClose{background:#111;color:#FDFBF6}
   </section>
 
   <footer>
-    <div class="note">Tarot · Viaje del Loco — junta v1.2 (2026-10-28)</div>
+    <div class="note">Tarot · Viaje del Loco — junta v1.3 (2026-10-28)</div>
     <div class="seal">Crafted in NYC</div>
   </footer>
 </div>
@@ -1103,6 +1103,83 @@ function countLabel(n){
   const t = I18N_T[lang];
   return n === 1 ? t.counts[1] : n + t.counts.n;
 }
+
+/* ---------- Mazo real de 78 (v1.3, código puro sin DOM: extraíble para pruebas) ---------- */
+/* Mayores: glosa del JOURNEY (por nombre); mean/meanRev de las demo + 10 completadas. */
+const MAJOR_NUM = {"El Loco":"0","El Mago":"I","La Papisa":"II","La Emperatriz":"III","El Emperador":"IV","El Papa":"V","Los Enamorados":"VI","El Carro":"VII","La Fuerza":"VIII","El Ermitaño":"IX","La Rueda de la Fortuna":"X","La Justicia":"XI","El Colgado":"XII","La Muerte":"XIII","La Templanza":"XIV","El Diablo":"XV","La Torre":"XVI","La Estrella":"XVII","La Luna":"XVIII","El Sol":"XIX","El Juicio":"XX","El Mundo":"XXI"};
+const MAJOR_EN = {"El Loco":"The Fool","El Mago":"The Magician","La Papisa":"The High Priestess","La Emperatriz":"The Empress","El Emperador":"The Emperor","El Papa":"The Hierophant","Los Enamorados":"The Lovers","El Carro":"The Chariot","La Fuerza":"Strength","El Ermitaño":"The Hermit","La Rueda de la Fortuna":"Wheel of Fortune","La Justicia":"Justice","El Colgado":"The Hanged Man","La Muerte":"Death","La Templanza":"Temperance","El Diablo":"The Devil","La Torre":"The Tower","La Estrella":"The Star","La Luna":"The Moon","El Sol":"The Sun","El Juicio":"Judgement","El Mundo":"The World"};
+const MAJOR_MEAN = {
+  "El Loco":["Al derecho: un inicio sin ataduras, confianza para saltar.","Al revés: un salto sin mirar, o miedo a dar el paso."],
+  "El Mago":["Al derecho: herramientas en la mano y momento de actuar.","Al revés: talento sin usar, o un inicio postergado."],
+  "La Papisa":["Al derecho: intuición y silencio que revelan.","Al revés: intuición ignorada, ruido que tapa la voz interior."],
+  "La Emperatriz":["Al derecho: fertilidad, cuidado y abundancia que crece.","Al revés: cuidado descuidado, creatividad que se bloquea."],
+  "El Emperador":["Al derecho: orden, estructura y autoridad firme.","Al revés: rigidez o control que asfixia."],
+  "El Papa":["Al derecho: tradición, enseñanza y rito que guía.","Al revés: dogma vacío o un maestro que no convence."],
+  "Los Enamorados":["Al derecho: una elección del corazón, vínculo que se afirma.","Al revés: una elección postergada o un vínculo en duda."],
+  "El Carro":["Al derecho: avance firme con las riendas en la mano.","Al revés: dirección perdida, fuerzas que tiran en contra."],
+  "La Fuerza":["Al derecho: fuerza serena que doma sin pelear.","Al revés: fuerza que se agota o se vuelve bruta."],
+  "El Ermitaño":["Al derecho: pausa sabia para ver con luz propia.","Al revés: aislamiento que ya no enseña nada."],
+  "La Rueda de la Fortuna":["Al derecho: el ciclo gira a tu favor, acepta el cambio.","Al revés: el ciclo se atasca, el cambio se resiste."],
+  "La Justicia":["Al derecho: hechos pesados con justicia y claridad.","Al revés: un juicio torcido que conviene revisar."],
+  "El Colgado":["Al derecho: pausa que cambia la mirada, soltar para ver.","Al revés: pausa que se alarga, sacrificio sin sentido."],
+  "La Muerte":["Al derecho: un final necesario que abre espacio nuevo.","Al revés: un final que se resiste, miedo a soltar."],
+  "La Templanza":["Al derecho: paciencia, equilibrio y tiempo a tu favor.","Al revés: prisa y extremos que desequilibran."],
+  "El Diablo":["Al derecho: una atadura que se ve de frente.","Al revés: la atadura se afloja, llega el momento de soltar."],
+  "La Torre":["Al derecho: lo falso cae de golpe y deja ver lo real.","Al revés: un derrumbe que se avecina y se niega."],
+  "La Estrella":["Al derecho: esperanza serena y rumbo claro.","Al revés: esperanza que se apaga, cuesta ver la luz."],
+  "La Luna":["Al derecho: niebla y dudas, no decidas a ciegas.","Al revés: la niebla se disipa, lo confuso se aclara."],
+  "El Sol":["Al derecho: luz plena, alegría y todo a la vista.","Al revés: luz nublada, alegría que tarda en llegar."],
+  "El Juicio":["Al derecho: despertar, balance y una llamada que se responde.","Al revés: un llamado ignorado, cuentas pendientes."],
+  "El Mundo":["Al derecho: cierre pleno, todo en su lugar.","Al revés: un cierre que se resiste, falta un paso."]};
+const JOURNEY_GLOSS = {}; JOURNEY.forEach(j => { JOURNEY_GLOSS[j[0]] = j[1]; });
+function buildMajors(){ return Object.keys(MAJOR_NUM).map(es => { const m = MAJOR_MEAN[es]; return C(MAJOR_NUM[es], es, MAJOR_EN[es], false, JOURNEY_GLOSS[es], m[0], m[1]); }); }
+const DECK_SUITS = [
+  {es:"Copas", en:"Cups", dom:"las emociones"},
+  {es:"Oros", en:"Pentacles", dom:"lo material"},
+  {es:"Bastos", en:"Wands", dom:"la acción"},
+  {es:"Espadas", en:"Swords", dom:"la mente"}];
+const DECK_RANKS = [
+  {es:"As", en:"Ace", g:"Un inicio puro en {d}.", up:"Al derecho: energía nueva y plena en {d}.", down:"Al revés: un inicio que se bloquea en {d}."},
+  {es:"Dos", en:"Two", g:"Un vínculo que equilibra en {d}.", up:"Al derecho: unión y equilibrio en {d}.", down:"Al revés: un vínculo tenso o desequilibrado en {d}."},
+  {es:"Tres", en:"Three", g:"Un primer fruto que se celebra en {d}.", up:"Al derecho: crecimiento y alegría en {d}.", down:"Al revés: un fruto que tarda o se dispersa en {d}."},
+  {es:"Cuatro", en:"Four", g:"Una pausa que ordena en {d}.", up:"Al derecho: estabilidad y descanso en {d}.", down:"Al revés: estabilidad que se vuelve encierro en {d}."},
+  {es:"Cinco", en:"Five", g:"Un roce que incomoda en {d}.", up:"Al derecho: un conflicto que enseña en {d}.", down:"Al revés: un roce que se alarga sin resolver en {d}."},
+  {es:"Seis", en:"Six", g:"Un recuerdo que suaviza en {d}.", up:"Al derecho: armonía y apoyo en {d}.", down:"Al revés: nostalgia que ata en {d}."},
+  {es:"Siete", en:"Seven", g:"Una espera con estrategia en {d}.", up:"Al derecho: paciencia y cálculo en {d}.", down:"Al revés: espera ansiosa o un plan que se enreda en {d}."},
+  {es:"Ocho", en:"Eight", g:"Un movimiento que avanza en {d}.", up:"Al derecho: progreso constante en {d}.", down:"Al revés: avance trabado o prisa sin rumbo en {d}."},
+  {es:"Nueve", en:"Nine", g:"Una resistencia que madura en {d}.", up:"Al derecho: fuerza para sostener en {d}.", down:"Al revés: cansancio que pide soltar en {d}."},
+  {es:"Diez", en:"Ten", g:"Un ciclo que se completa en {d}.", up:"Al derecho: cierre y plenitud en {d}.", down:"Al revés: un ciclo que pesa y no cierra en {d}."},
+  {es:"Sota", en:"Page", g:"Un mensaje joven en {d}.", up:"Al derecho: curiosidad y un aviso nuevo en {d}.", down:"Al revés: un mensaje que se pierde en {d}."},
+  {es:"Caballo", en:"Knight", g:"Un impulso que cabalga en {d}.", up:"Al derecho: acción decidida en {d}.", down:"Al revés: impulso sin freno o sin dirección en {d}."},
+  {es:"Reina", en:"Queen", g:"Un cuidado maduro en {d}.", up:"Al derecho: intuición y sostén en {d}.", down:"Al revés: cuidado que se vuelve control en {d}."},
+  {es:"Rey", en:"King", g:"Un mando sereno en {d}.", up:"Al derecho: autoridad y dominio en {d}.", down:"Al revés: autoridad rígida o ausente en {d}."}];
+function buildMinors(){
+  const out = [];
+  DECK_SUITS.forEach(s => DECK_RANKS.forEach(r => {
+    out.push(C("", r.es + " de " + s.es, r.en + " of " + s.en, false,
+      r.g.replace("{d}", s.dom), r.up.replace("{d}", s.dom), r.down.replace("{d}", s.dom)));
+  }));
+  return out;
+}
+function buildDeck78(){ return buildMajors().concat(buildMinors()); }
+function shuffleDeck(a){ for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function drawSpread(n){ const deck = shuffleDeck(buildDeck78()); const drawn = deck.slice(0, n); drawn.forEach(c => { c.rev = Math.random() < 0.5; }); return drawn; }
+let drawnCards = [];
+function synthFor(spread, drawn){
+  if(spread.id === "day") return spread.synth;
+  if(spread.id === "yesno"){
+    const c = drawn[0];
+    const ans = c.rev ? "No" : (lang === "en" ? "Yes" : "Sí");
+    const verb = lang === "en" ? "The card answers " + ans.toLowerCase() + ": " : "La carta responde que " + ans.toLowerCase() + ": ";
+    return verb + c.gloss;
+  }
+  const seq = drawn.map((c, i) => spread.pos[lang][i] + " · " + cardNameT(c)).join("; ");
+  const closeES = {three:"Léelas en orden: el pasado explica, el presente decide y el futuro advierte.", horse:"Léelas en orden y el panorama se arma solo.", celtic:"Léelas en orden: del corazón al resultado, la historia completa está ahí."};
+  const closeEN = {three:"Read them in order: the past explains, the present decides, the future warns.", horse:"Read them in order and the full picture comes together.", celtic:"Read them in order: from the heart to the outcome, the whole story is there."};
+  const close = (lang === "en" ? closeEN : closeES)[spread.id] || (lang === "en" ? "Read them in order." : "Léelas en orden.");
+  return (lang === "en" ? "The spread: " : "La tirada: ") + seq + ". " + close;
+}
+
 function cardNameT(c){ return lang === "en" ? c.en : c.es; }
 function oriLabel(c){ return c.rev ? I18N_T[lang].reversed : I18N_T[lang].upright; }
 function showViewT(id){
@@ -1116,6 +1193,7 @@ function renderListT(){
 }
 function openRitualT(id){
   cur = SPREADS.find(s => s.id === id);
+  drawnCards = (id === "day") ? cur.cards : drawSpread(cur.pos.es.length);
   dealt = 0; busy = false;
   $("#tRTitle").textContent = cur.name[lang];
   $("#tRSub").textContent = cur.sub[lang];
@@ -1128,24 +1206,24 @@ function openRitualT(id){
 }
 function updateCounter(){
   const t = I18N_T[lang];
-  $("#tCounter").textContent = t.deck + (cur.cards.length - dealt);
-  $("#tDeckBtn").disabled = busy || dealt >= cur.cards.length;
-  $("#tInterpRow").classList.toggle("off", dealt < cur.cards.length);
+  $("#tCounter").textContent = t.deck + (cur.pos.es.length - dealt);
+  $("#tDeckBtn").disabled = busy || dealt >= cur.pos.es.length;
+  $("#tInterpRow").classList.toggle("off", dealt < cur.pos.es.length);
 }
 function dealOne(){
-  if(!cur || busy || dealt >= cur.cards.length) return;
-  const c = cur.cards[dealt];
+  if(!cur || busy || dealt >= cur.pos.es.length) return;
+  const c = drawnCards[dealt];
   const pos = cur.pos[lang][dealt];
   const div = document.createElement("div");
   div.className = "dealt-card";
-  div.innerHTML = '<div><div class="dealt-pos">' + esc(pos) + '</div><div class="dealt-name">' + esc(c.n + " · " + cardNameT(c)) + '</div></div><span class="dealt-ori">' + esc(oriLabel(c)) + "</span>";
+  div.innerHTML = '<div><div class="dealt-pos">' + esc(pos) + '</div><div class="dealt-name">' + esc((c.n ? c.n + " · " : "") + cardNameT(c)) + '</div></div><span class="dealt-ori">' + esc(oriLabel(c)) + "</span>";
   $("#tDealtList").appendChild(div);
   dealt++;
   updateCounter();
 }
 function dealAll(){
   if(!cur || busy) return;
-  while(dealt < cur.cards.length) dealOne();
+  while(dealt < cur.pos.es.length) dealOne();
 }
 $("#tDeckBtn").addEventListener("click", dealOne);
 $("#tRevealBtn").addEventListener("click", dealAll);
@@ -1156,6 +1234,7 @@ $("#tShuffleBtn").addEventListener("click", () => {
   $("#tShuffleBtn").textContent = t.shuffling;
   updateCounter();
   setTimeout(() => {
+    if(cur.id !== "day") drawnCards = drawSpread(cur.pos.es.length);
     dealt = 0;
     $("#tDealtList").innerHTML = "";
     busy = false;
@@ -1167,16 +1246,16 @@ $("#tInterpBtn").addEventListener("click", () => {
   const t = I18N_T[lang];
   $("#tITitle").textContent = cur.name[lang];
   $("#tSynthLbl").textContent = t.synth;
-  $("#tSynthText").textContent = cur.synth;
+  $("#tSynthText").textContent = synthFor(cur, drawnCards);
   const ab = $("#tAnswerBox");
-  if(cur.answer){
-    ab.textContent = t.answer + ": " + cur.answer[lang];
+  if(cur.id === "yesno" && drawnCards[0]){
+    ab.textContent = t.answer + ": " + (drawnCards[0].rev ? "No" : (lang === "en" ? "Yes" : "Sí"));
     ab.classList.remove("off");
   } else {
     ab.classList.add("off");
   }
-  $("#tInterpList").innerHTML = cur.cards.map((c, i) =>
-    '<article class="interp-card"><div class="interp-pos">' + esc(cur.pos[lang][i]) + '</div><div class="interp-name">' + esc(c.n + " · " + cardNameT(c)) + " — " + esc(oriLabel(c)) + '</div><p class="interp-gloss">' + esc(c.gloss) + '</p><p class="interp-mean">' + esc(c.rev ? c.meanRev : c.mean) + "</p></article>"
+  $("#tInterpList").innerHTML = drawnCards.map((c, i) =>
+    '<article class="interp-card"><div class="interp-pos">' + esc(cur.pos[lang][i]) + '</div><div class="interp-name">' + esc((c.n ? c.n + " · " : "") + cardNameT(c)) + " — " + esc(oriLabel(c)) + '</div><p class="interp-gloss">' + esc(c.gloss) + '</p><p class="interp-mean">' + esc(c.rev ? c.meanRev : c.mean) + "</p></article>"
   ).join("");
   showViewT("tInterpView");
 });
@@ -1184,8 +1263,8 @@ $("#tRBack").addEventListener("click", () => { renderListT(); showViewT("tListVi
 $("#tIBack").addEventListener("click", () => showViewT("tRitualView"));
 $("#tSaveBtn").addEventListener("click", () => {
   addJournalEntry({type: "tirada", title: cur.name[lang],
-    cards: cur.cards.map((c, i) => cur.pos[lang][i] + " · " + cardNameT(c)),
-    text: cur.synth});
+    cards: drawnCards.map((c, i) => cur.pos[lang][i] + " · " + cardNameT(c)),
+    text: synthFor(cur, drawnCards)});
   toast(I18N_T[lang].saved);
 });
 function applyTextsT(){

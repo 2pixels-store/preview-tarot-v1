@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tarot · Viaje del Loco — junta v1.10</title>
+<title>Tarot · Viaje del Loco — junta v1.11</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff;color:#111}
@@ -374,7 +374,7 @@ body.night .tool-btn.on{background:#FDFBF6;color:#111}
 
 
 .shape-celtic{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.shape-celtic .dealt-card{max-width:50px;justify-self:center}
+.shape-celtic .dealt-card{width:50px;justify-self:center}
 .shape-celtic .dealt-card:nth-child(1){grid-column:2;grid-row:2}
 .shape-celtic .dealt-card:nth-child(2){grid-column:2;grid-row:2;z-index:2}
 .shape-celtic .dealt-card:nth-child(3){grid-column:2;grid-row:3}
@@ -405,6 +405,8 @@ body.night .tool-btn.on{background:#FDFBF6;color:#111}
 .shape-horse .dealt-card:nth-child(7){grid-column:6/span 2;grid-row:2}
 .dealt-num{position:absolute;top:5px;left:5px;z-index:3;width:17px;height:17px;border-radius:50%;background:#FDFBF6;color:#111;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.3)}
 body.night .dealt-num{background:#1E1E1E;color:#FDFBF6}
+
+.shape-celtic .dealt-card:nth-child(2) .dealt-num{top:auto;bottom:5px;left:auto;right:5px}
 </style>
 </head>
 <body>
@@ -687,7 +689,7 @@ body.night .dealt-num{background:#1E1E1E;color:#FDFBF6}
     <div class="card">
       <div class="row">
         <span class="row-lbl" id="lblVersion">Versión</span>
-        <span class="row-val">Tarot · Viaje del Loco — junta v1.10 (2026-10-28)</span>
+        <span class="row-val">Tarot · Viaje del Loco — junta v1.11 (2026-10-28)</span>
       </div>
       <div class="row">
         <button class="rowbtn" id="noticeBtn" type="button"><span id="lblNotice">Aviso</span><span>›</span></button>
@@ -756,7 +758,7 @@ body.night .dealt-num{background:#1E1E1E;color:#FDFBF6}
   </section>
 
   <footer>
-    <div class="note">Tarot · Viaje del Loco — junta v1.10 (2026-10-28)</div>
+    <div class="note">Tarot · Viaje del Loco — junta v1.11 (2026-10-28)</div>
     <div class="seal">Crafted in NYC</div>
   </footer>
 </div>

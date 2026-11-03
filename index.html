@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tarot · Viaje del Loco — junta v1.14-dev</title>
+<title>Tarot · Viaje del Loco — junta v1.14-dev2</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff;color:#111}
@@ -495,6 +495,26 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
 #cgHead.open::after{content:" \25BE"}
 #cGrid.off{display:none}
 .cbtn svg.tic{fill:none;stroke:none}
+
+/* v1.14-dev2: paridad mockup flow-2 — lienzo full-screen, barras superpuestas, carta a sangre */
+#cColorView:not(.off){position:fixed;top:0;right:0;bottom:0;left:0;z-index:30;overflow:hidden;background:#fff}
+#cColorView .cstage{position:absolute;top:0;right:0;bottom:0;left:0}
+#cColorView .canvas-frame{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;margin:0;border:none;border-radius:0;background:#fff;overflow:hidden}
+#cColorView .canvas-frame img{width:100%;height:100%;object-fit:cover;display:block}
+#cColorView .ctopbar{position:absolute;top:0;left:0;right:0;z-index:20;gap:4px;padding-left:8px;padding-right:8px}
+#cColorView .tpill{padding:0 8px}
+#cColorView #cBackBtn,#cColorView #cUndoBtn,#cColorView #cRedoBtn{min-width:36px;padding:0 6px}
+#cColorView #cUndoBtn,#cColorView #cRedoBtn{font-variant-emoji:text}
+#cColorView .tsaved,#cColorView .tzoom{font-size:12px}
+#view-colorear .cdock{position:absolute;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom, 0px) + 12px);z-index:10;margin:0}
+#cColorView .cpill{box-sizing:border-box;padding:10px 12px;gap:6px;border:none;background:rgba(253,251,246,.88);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+#cColorView .ctools{gap:6px;flex:none}
+#cColorView .tbtn{width:32px;height:48px;flex:none}
+#cColorView .tbtn img{height:46px}
+#cColorView .cwell span{width:36px;height:36px}
+#cColorView .cslider{min-width:0;flex:1;gap:8px}
+#cColorView .cslider input[type=range]{min-width:0;flex:1}
+#cColorView .csize-val{min-width:18px;flex:none}
 </style>
 </head>
 <body>
@@ -777,7 +797,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <div class="card">
       <div class="row">
         <span class="row-lbl" id="lblVersion">Versión</span>
-        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev (2026-11-02)</span>
+        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev2 (2026-11-02)</span>
       </div>
       <div class="row">
         <button class="rowbtn" id="noticeBtn" type="button"><span id="lblNotice">Aviso</span><span>›</span></button>
@@ -813,8 +833,8 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <button class="tpill" id="cBackBtn" type="button" aria-label="Volver a la galería">←</button>
     <button class="tpill tref" id="cRefBtn" type="button" aria-label="Referencia">REF <span class="chev" id="cRefChev">▼</span></button>
     <span class="tname" id="cTopName"></span>
-    <button class="tpill" id="cUndoBtn" type="button" aria-label="Deshacer">↩</button>
-    <button class="tpill" id="cRedoBtn" type="button" aria-label="Rehacer">↪</button>
+    <button class="tpill" id="cUndoBtn" type="button" aria-label="Deshacer">↩︎</button>
+    <button class="tpill" id="cRedoBtn" type="button" aria-label="Rehacer">↪︎</button>
     <span class="tsaved" id="cSavedLbl">Guardado ✓</span>
     <span class="tzoom" id="cZoomLbl">100%</span>
   </div>
@@ -878,7 +898,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
   </section>
 
   <footer>
-    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev (2026-11-02)</div>
+    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev2 (2026-11-02)</div>
     <div class="seal">Crafted in NYC</div>
   </footer>
 </div>
@@ -2347,15 +2367,8 @@ function applyZoomC(){
   const zl = $("#cZoomLbl"); if(zl) zl.textContent = Math.round(zoomC * 100) + "%";
 }
 function sizeStageC(){
-  const fr = $("#canvasFrame"), view = $("#cColorView");
-  if(!fr || !view) return;
-  const topH = (document.querySelector(".ctopbar") || {}).offsetHeight || 0;
-  const dockH = (document.querySelector(".cdock") || {}).offsetHeight || 0;
-  const viewW = view.clientWidth;
-  if(!viewW) return;
-  const availH = window.innerHeight - topH - dockH - 40;
-  const side = Math.max(180, Math.min(viewW, availH));
-  fr.style.width = side + "px";
+  /* v1.14-dev2: el marco es full-screen por CSS (#cColorView fixed + .canvas-frame absolute inset:0);
+     no hay tamano cuadrado que calcular. sizePaintC() dimensiona el lienzo desde fr.clientWidth/Height. */
 }
 function paintPos(ev){
   const r = $("#paintCanvas").getBoundingClientRect();

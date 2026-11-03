@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tarot · Viaje del Loco — junta v1.14-dev2</title>
+<title>Tarot · Viaje del Loco — junta v1.14-dev3</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff;color:#111}
@@ -515,6 +515,17 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
 #cColorView .cslider{min-width:0;flex:1;gap:8px}
 #cColorView .cslider input[type=range]{min-width:0;flex:1}
 #cColorView .csize-val{min-width:18px;flex:none}
+/* v1.14-dev3: barra fina paridad mockup flow-2 + lupa del gotero */
+#cColorView .ctopbar{padding-top:calc(env(safe-area-inset-top, 0px) + 4px);padding-bottom:4px}
+#cColorView .tpill{height:32px;min-width:32px}
+#cColorView .tpill.tref{border-radius:10px}
+#cColorView #refPanel{top:calc(env(safe-area-inset-top, 0px) + 48px)}
+#dropLoupe{position:absolute;width:132px;height:132px;border-radius:50%;border:3px solid #fff;box-shadow:0 6px 20px rgba(0,0,0,.35);overflow:hidden;z-index:40;pointer-events:none}
+#dropLoupeCv{width:100%;height:100%;display:block;border-radius:50%}
+#dropLoupe .ret{position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.45)}
+#dropLoupe .dot{position:absolute;left:50%;top:50%;width:4px;height:4px;margin:-2px 0 0 -2px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.45)}
+#dropLoupeSw{position:absolute;left:50%;bottom:8px;width:22px;height:22px;margin-left:-11px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.4)}
+#dropLoupeSw.empty{background-color:#fff !important;background-image:linear-gradient(to top right,transparent calc(50% - 1px),#888 calc(50% - 1px),#888 calc(50% + 1px),transparent calc(50% + 1px))}
 </style>
 </head>
 <body>
@@ -797,7 +808,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <div class="card">
       <div class="row">
         <span class="row-lbl" id="lblVersion">Versión</span>
-        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev2 (2026-11-02)</span>
+        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev3 (2026-11-03)</span>
       </div>
       <div class="row">
         <button class="rowbtn" id="noticeBtn" type="button"><span id="lblNotice">Aviso</span><span>›</span></button>
@@ -838,6 +849,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <span class="tsaved" id="cSavedLbl">Guardado ✓</span>
     <span class="tzoom" id="cZoomLbl">100%</span>
   </div>
+  <div id="dropLoupe" class="off"><canvas id="dropLoupeCv" width="120" height="120"></canvas><div class="ret"></div><div class="dot"></div><span id="dropLoupeSw"></span></div>
   <div id="refPanel" class="off"><img id="refPanelImg" alt="Referencia en color"></div>
   <div class="cstage">
     <div class="canvas-frame" id="canvasFrame">
@@ -898,7 +910,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
   </section>
 
   <footer>
-    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev2 (2026-11-02)</div>
+    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev3 (2026-11-03)</div>
     <div class="seal">Crafted in NYC</div>
   </footer>
 </div>
@@ -2028,6 +2040,7 @@ function syncWellC(){ const d = $("#cWellDot"); if(d) d.style.background = selec
 function setToolC(k){
   if(k === "dropper") prevToolC = (toolC === "dropper") ? prevToolC : toolC;
   toolC = k;
+  hideDropLoupe(); dropperDragC = null;
   closePrismaC();
   renderToolsC();
 }
@@ -2111,7 +2124,12 @@ function closeRefPanel(){
 }
 function toggleRefPanel(){ refOpenC ? closeRefPanel() : openRefPanel(); }
 function refPanelDown(ev){
-  if(toolC === "dropper"){ sampleRefC(ev); return; }
+  if(toolC === "dropper"){
+    if(dropperDragC){ hideDropLoupe(); dropperDragC = null; return; }
+    dropperDragC = "ref"; showDropLoupeRef(ev);
+    try{ ev.target.setPointerCapture(ev.pointerId); }catch(e){}
+    return;
+  }
   refPtrsC.set(ev.pointerId, [ev.clientX, ev.clientY]);
   if(refPtrsC.size === 2){
     const pts = [...refPtrsC.values()];
@@ -2120,6 +2138,7 @@ function refPanelDown(ev){
   }
 }
 function refPanelMove(ev){
+  if(toolC === "dropper" && dropperDragC === "ref"){ updateDropLoupe(ev, true); return; }
   if(!refPtrsC.has(ev.pointerId)) return;
   refPtrsC.set(ev.pointerId, [ev.clientX, ev.clientY]);
   if(refPinchC && refPtrsC.size >= 2){
@@ -2130,6 +2149,11 @@ function refPanelMove(ev){
   }
 }
 function refPanelUp(ev){
+  if(toolC === "dropper" && dropperDragC === "ref"){
+    dropperDragC = null; hideDropLoupe();
+    if(ev.type === "pointerup") sampleRefC(ev);
+    return;
+  }
   refPtrsC.delete(ev.pointerId);
   if(refPtrsC.size < 2) refPinchC = null;
 }
@@ -2161,6 +2185,86 @@ function sampleRefC(ev){
     selectedColorC = rgbToHex(px[0], px[1], px[2]);
   }catch(e){ toast(t.dropEmpty); return; }
   toolC = prevToolC || "brush"; renderToolsC(); toast(t.dropCopied);
+}
+/* v1.14-dev3: lupa del gotero (estilo Photoshop) — vista ampliada + color muestreado; NO cambia el muestreo */
+let dropperDragC = null;
+let dropLoupeCacheC = null;
+function hideDropLoupe(){ const l = $("#dropLoupe"); if(l) l.classList.add("off"); }
+function dropStrokeSampleAt(clientX, clientY){
+  const pc = $("#paintCanvas"); if(!pc) return null;
+  const ctx = pc.getContext("2d"); if(!ctx) return null;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const pos = paintPos({clientX, clientY});
+  try{
+    const px = ctx.getImageData(Math.round(pos[0] * dpr), Math.round(pos[1] * dpr), 1, 1).data;
+    if(!px || px[3] < 12) return null;
+    return rgbToHex(px[0], px[1], px[2]);
+  }catch(e){ return null; }
+}
+function buildDropLoupeCache(){
+  const pc = $("#paintCanvas"), img = $("#canvasImg");
+  if(!pc || !img) return null;
+  const r = pc.getBoundingClientRect();
+  const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
+  const off = document.createElement("canvas"); off.width = w; off.height = h;
+  const ctx = off.getContext("2d"); if(!ctx) return null;
+  ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, w, h);
+  if(img.naturalWidth){
+    const s = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+    const dw = img.naturalWidth * s, dh = img.naturalHeight * s;
+    ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+  }
+  ctx.drawImage(pc, 0, 0, w, h);
+  return {cv: off, w, h, rect: r};
+}
+function updateDropLoupe(ev, refMode){
+  const l = $("#dropLoupe"), cv = $("#dropLoupeCv"), sw = $("#dropLoupeSw");
+  if(!l || !cv || !sw || !dropLoupeCacheC) return;
+  const src = dropLoupeCacheC, S = Math.max(8, Math.min(40, src.w, src.h));
+  let sx, sy;
+  if(refMode){
+    const nx = (ev.clientX - src.rect.left) / src.rect.width, ny = (ev.clientY - src.rect.top) / src.rect.height;
+    sx = Math.max(0, Math.min(src.w - S, nx * src.w - S / 2));
+    sy = Math.max(0, Math.min(src.h - S, ny * src.h - S / 2));
+  } else {
+    const x = ev.clientX - src.rect.left, y = ev.clientY - src.rect.top;
+    sx = Math.max(0, Math.min(src.w - S, x - S / 2));
+    sy = Math.max(0, Math.min(src.h - S, y - S / 2));
+  }
+  const ctx = cv.getContext("2d"); if(!ctx) return;
+  ctx.clearRect(0, 0, 120, 120);
+  ctx.drawImage(src.cv, sx, sy, S, S, 0, 0, 120, 120);
+  let col = null;
+  if(refMode){
+    const nx = (ev.clientX - src.rect.left) / src.rect.width, ny = (ev.clientY - src.rect.top) / src.rect.height;
+    if(nx >= 0 && nx <= 1 && ny >= 0 && ny <= 1){
+      try{ const px = src.cv.getContext("2d").getImageData(Math.floor(nx * src.w), Math.floor(ny * src.h), 1, 1).data; if(px && px[3] >= 12) col = rgbToHex(px[0], px[1], px[2]); }catch(e){}
+    }
+  } else col = dropStrokeSampleAt(ev.clientX, ev.clientY);
+  if(col){ sw.style.background = col; sw.classList.remove("empty"); }
+  else { sw.style.background = "#fff"; sw.classList.add("empty"); }
+  const L = 132, GAP = 28, vw = window.innerWidth, vh = window.innerHeight;
+  let top = ev.clientY - GAP - L, left = ev.clientX - L / 2;
+  if(top < 4) top = ev.clientY + GAP;
+  if(top + L > vh - 4) top = Math.max(4, vh - L - 4);
+  left = Math.max(4, Math.min(vw - L - 4, left));
+  l.style.left = left + "px"; l.style.top = top + "px";
+}
+function showDropLoupe(ev){
+  const cache = buildDropLoupeCache(); if(!cache) return;
+  dropLoupeCacheC = cache;
+  updateDropLoupe(ev, false);
+  const l = $("#dropLoupe"); if(l) l.classList.remove("off");
+}
+function showDropLoupeRef(ev){
+  const img = $("#refPanelImg"); if(!img || !img.naturalWidth) return;
+  const off = document.createElement("canvas");
+  off.width = img.naturalWidth; off.height = img.naturalHeight;
+  const ctx = off.getContext("2d"); if(!ctx) return;
+  ctx.drawImage(img, 0, 0);
+  dropLoupeCacheC = {cv: off, w: off.width, h: off.height, rect: img.getBoundingClientRect()};
+  updateDropLoupe(ev, true);
+  const l = $("#dropLoupe"); if(l) l.classList.remove("off");
 }
 function renderMiBaraja(){
   const t = I18N_C[lang];
@@ -2267,17 +2371,23 @@ function paintSeg(ctx, s, x0, y0, x1, y1, idx){
     ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
   } else if(s.tool === "marker"){
     ctx.globalCompositeOperation = "source-over";
-    ctx.globalAlpha = 0.55; ctx.strokeStyle = col; ctx.lineWidth = w * 1.4;
+    ctx.globalAlpha = 0.95; ctx.strokeStyle = col; ctx.lineWidth = w * 1.15;
     ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
   } else if(s.tool === "crayon"){
     ctx.globalCompositeOperation = "source-over";
     const dx = x1 - x0, dy = y1 - y0, len = Math.hypot(dx, dy) || 1, px = -dy / len, py = dx / len;
-    const j = k => ((((idx * 7 + k * 13) % 5) - 2) * 0.8);
-    [[0, 0.75, 1], [1, 0.35, 0.6], [2, 0.35, 0.6]].forEach(([k, a, wf]) => {
+    const det = n => { const v = Math.sin(n * 127.1 + idx * 311.7) * 43758.5453; return v - Math.floor(v); };
+    const j = k => (det(k) - 0.5) * 5;
+    [[0, 0.9, 0.55], [1, 0.55, 0.85], [2, 0.45, 0.7], [3, 0.35, 0.55], [4, 0.3, 0.45]].forEach(([k, a, wf]) => {
       ctx.globalAlpha = a; ctx.strokeStyle = col; ctx.lineWidth = w * wf;
       const ox = px * j(k), oy = py * j(k);
       ctx.beginPath(); ctx.moveTo(x0 + ox, y0 + oy); ctx.lineTo(x1 + ox, y1 + oy); ctx.stroke();
     });
+    for(let k = 0; k < 5; k++){
+      const t = (k + 0.5) / 5, gx = x0 + dx * t + (det(100 + k) - 0.5) * w * 1.4, gy = y0 + dy * t + (det(200 + k) - 0.5) * w * 1.4;
+      ctx.globalAlpha = 0.35; ctx.fillStyle = col;
+      ctx.beginPath(); ctx.arc(gx, gy, Math.max(0.7, w * 0.09), 0, 7); ctx.fill();
+    }
   } else {
     ctx.globalCompositeOperation = "source-over";
     ctx.globalAlpha = 0.25; ctx.strokeStyle = col; ctx.lineWidth = w * 1.8;
@@ -2295,12 +2405,17 @@ function paintDot(ctx, s, x, y){
     ctx.beginPath(); ctx.arc(x, y, w * 0.5, 0, 7); ctx.fill();
   } else if(s.tool === "marker"){
     ctx.globalCompositeOperation = "source-over";
-    ctx.globalAlpha = 0.55; ctx.fillStyle = s.color;
-    ctx.beginPath(); ctx.arc(x, y, w * 0.7, 0, 7); ctx.fill();
+    ctx.globalAlpha = 0.95; ctx.fillStyle = s.color;
+    ctx.beginPath(); ctx.arc(x, y, w * 0.6, 0, 7); ctx.fill();
   } else if(s.tool === "crayon"){
     ctx.globalCompositeOperation = "source-over";
-    ctx.globalAlpha = 0.75; ctx.fillStyle = s.color;
-    ctx.beginPath(); ctx.arc(x, y, w * 0.5, 0, 7); ctx.fill();
+    ctx.globalAlpha = 0.85; ctx.fillStyle = s.color;
+    ctx.beginPath(); ctx.arc(x, y, w * 0.45, 0, 7); ctx.fill();
+    const det = n => { const v = Math.sin(n * 127.1 + Math.round(x * 10) * 13.7 + Math.round(y * 10) * 7.3) * 43758.5453; return v - Math.floor(v); };
+    for(let k = 0; k < 6; k++){
+      ctx.globalAlpha = 0.4; ctx.fillStyle = s.color;
+      ctx.beginPath(); ctx.arc(x + (det(k) - 0.5) * w * 0.9, y + (det(50 + k) - 0.5) * w * 0.9, Math.max(0.7, w * 0.1), 0, 7); ctx.fill();
+    }
   } else {
     ctx.globalCompositeOperation = "source-over";
     ctx.globalAlpha = 0.25; ctx.fillStyle = s.color;
@@ -2379,6 +2494,7 @@ function paintStart(ev){
   if(!cv.width) sizePaintC();
   pointersC.set(ev.pointerId, [ev.clientX, ev.clientY]);
   if(pointersC.size === 2){
+    hideDropLoupe(); dropperDragC = null;
     drawingC = null; redrawPaintC();
     const pts = [...pointersC.values()];
     pinchC = {d0: Math.hypot(pts[0][0]-pts[1][0], pts[0][1]-pts[1][1]),
@@ -2387,8 +2503,8 @@ function paintStart(ev){
     try{ cv.setPointerCapture(ev.pointerId); }catch(e){}
     return;
   }
-  if(pointersC.size > 2) return;
-  if(toolC === "dropper"){ sampleCanvasC(ev); return; }
+  if(pointersC.size > 2){ hideDropLoupe(); dropperDragC = null; return; }
+  if(toolC === "dropper"){ dropperDragC = "canvas"; showDropLoupe(ev); try{ cv.setPointerCapture(ev.pointerId); }catch(e){} return; }
   const [x, y] = paintPos(ev);
   drawingC = {tool: toolC, color: selectedColorC, width: widthC, pts: [[x, y]]};
   paintDot(cv.getContext("2d"), drawingC, x, y);
@@ -2409,6 +2525,7 @@ function paintMove(ev){
     applyZoomC();
     return;
   }
+  if(toolC === "dropper" && dropperDragC === "canvas" && pointersC.size === 1){ updateDropLoupe(ev, false); return; }
   if(!drawingC || pointersC.size !== 1) return;
   const cv = $("#paintCanvas"), ctx = cv.getContext("2d");
   const [x, y] = paintPos(ev);
@@ -2423,6 +2540,11 @@ function paintEnd(ev){
   if(pinchC && pointersC.size < 2){
     pinchC = null;
     if(zoomC <= 1.05){ zoomC = 1; panXC = 0; panYC = 0; applyZoomC(); }
+  }
+  if(toolC === "dropper" && dropperDragC){
+    const src = dropperDragC; dropperDragC = null; hideDropLoupe();
+    if(ev && ev.type === "pointerup"){ if(src === "canvas") sampleCanvasC(ev); else sampleRefC(ev); }
+    return;
   }
   if(!drawingC) return;
   strokesC.push(drawingC);

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tarot · Viaje del Loco — junta v1.14-dev7 (2026-11-04)</title>
+<title>Tarot · Viaje del Loco — junta v1.14-dev8 (2026-11-04)</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff;color:#111}
@@ -823,7 +823,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <div class="card">
       <div class="row">
         <span class="row-lbl" id="lblVersion">Versión</span>
-        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev7 (2026-11-04)</span>
+        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev8 (2026-11-04)</span>
       </div>
       <div class="row">
         <button class="rowbtn" id="noticeBtn" type="button"><span id="lblNotice">Aviso</span><span>›</span></button>
@@ -925,7 +925,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
   </section>
 
   <footer>
-    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev7 (2026-11-04)</div>
+    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev8 (2026-11-04)</div>
     <div class="seal">Crafted in NYC</div>
   </footer>
 </div>
@@ -1120,6 +1120,16 @@ const I18N_H = {
   en: {eyebrow:"Your journey", title:"22-day plan", tag:"Learn tarot, one card a day, one at a time.", footLbl:"Twenty two day journey", go:"CONTINUE →", todayLbl:"Today", todayEyebrow:"Today", hint1:"Drag to spin · tap a segment to bring it up.", hint2:"Tap the center to enter the section.", footNote:"Sample · home only", bellLbl:"Reminder", bellDay:"Today · Day ", bellLine:"Your card for today awaits", menuToday:"Today's card", menuProgress:"My progress", menuSettings:"Settings", toNight:"Switch to night mode", toDay:"Switch to day mode", wheelAria:"Wheel menu: drag to spin", arrowAria:"Open today's card"}
 };
 let wheelActive = 0, wheelAngle = 0;
+/* v1.14-dev8: flecha Guia con rumbo dinamico — norte si seleccionada, noreste si no. */
+let guiaIc = null, guiaIcOn = null, guiaTx = 0, guiaTy = 0;
+function guiaArrowOrient(){
+  if(!guiaIc || !guiaIcOn) return;
+  const want = (wheelActive === 3) ? 0 : 45;
+  const r = (((want - 90 - wheelAngle) % 360) + 360) % 360;
+  const t = "translate(" + guiaTx.toFixed(1) + " " + guiaTy.toFixed(1) + ") scale(1.18) rotate(" + r.toFixed(1) + ") translate(-12 -12)";
+  guiaIc.setAttribute("transform", t);
+  guiaIcOn.setAttribute("transform", t);
+}
 function wheelPolar(cx, cy, r, deg){
   const a = deg * Math.PI / 180;
   return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
@@ -1180,6 +1190,7 @@ function wheelApply(){
   const ap = document.querySelector(".today-arrow svg path");
   if(ap) ap.style.stroke = (it.c === "#111" ? "#FDFBF6" : "#111");
   if (pickedSection) stainShow(wheelActive);
+  guiaArrowOrient();
 }
 function wheelPaintLive(top){
   const night = document.body.classList.contains("night");
@@ -1232,6 +1243,7 @@ function hubPulse(){
     icOn.setAttribute("class", "seg-ic-on");
     icOn.setAttribute("transform", "translate(" + tx.toFixed(1) + " " + ty.toFixed(1) + ") scale(1.18) translate(-12 -12)");
     icOn.innerHTML = it.icOn;
+    if(i === 3){ guiaIc = ic; guiaIcOn = icOn; guiaTx = tx; guiaTy = ty; }
     g.appendChild(p); g.appendChild(ic); g.appendChild(icOn);
     rotor.appendChild(g);
     dots.appendChild(document.createElement("i"));

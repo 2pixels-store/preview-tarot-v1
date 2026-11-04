@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tarot · Viaje del Loco — junta v1.14-dev6</title>
+<title>Tarot · Viaje del Loco — junta v1.14-dev7 (2026-11-04)</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff;color:#111}
@@ -55,6 +55,8 @@ header{position:relative;padding:2px 4px 14px}
 .seg.on .seg-ic-on .ring{fill:none;stroke:#FFFFFF;stroke-width:1.8}
 /* v1.14-dev6: Guía chevron — banda calada en inactivo */
 .seg .seg-ic .chev{fill:#111;stroke:none}
+/* v1.14-dev7: Colorear pluma — vane con canon calado */
+.seg .seg-ic .fth{fill:#111;stroke:none}
 .wheel-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:128px;height:128px;border-radius:50%;background:#FDFBF6;border:3px solid #111;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;z-index:2}
 .wheel-hub::before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:260px;height:260px;border-radius:50%;pointer-events:none;z-index:-1;background:radial-gradient(circle,rgba(232,168,32,.30) 0%,rgba(232,168,32,.14) 35%,rgba(232,168,32,0) 75%);filter:blur(8px)}
 .wheel-hub b{font-size:16px;line-height:1.15}
@@ -118,6 +120,7 @@ body.night .seg.on .seg-ic-on :is(path,rect,circle,polygon,ellipse):not(.edge):n
 body.night .seg.on .seg-ic-on .edge{stroke:#FDFBF6}
 body.night .seg.on .seg-ic-on .ring{stroke:#111}
 body.night .seg .seg-ic .chev{fill:#FDFBF6}
+body.night .seg .seg-ic .fth{fill:#FDFBF6}
 body.night .wheel-hub{background:#1E1E1E;border-color:#FDFBF6}
 body.night .wheel-hub b{color:#FDFBF6}
 body.night .wheel-hub span{color:#B9B3A6}
@@ -820,7 +823,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <div class="card">
       <div class="row">
         <span class="row-lbl" id="lblVersion">Versión</span>
-        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev6 (2026-11-03)</span>
+        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev7 (2026-11-04)</span>
       </div>
       <div class="row">
         <button class="rowbtn" id="noticeBtn" type="button"><span id="lblNotice">Aviso</span><span>›</span></button>
@@ -922,7 +925,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
   </section>
 
   <footer>
-    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev6 (2026-11-03)</div>
+    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev7 (2026-11-04)</div>
     <div class="seal">Crafted in NYC</div>
   </footer>
 </div>
@@ -1069,7 +1072,7 @@ const JOURNEY = [
 /* ---------- Rueda: matemática reutilizada de la muestra actual ---------- */
 const WHEEL_ITEMS = [
   {t:"Colorear", sub:"Colorea las cartas, una por día", c:"#EC1C8C",
-   ic:'<path d="M15 5.1 A8 8 0 1 0 17.9 16 Q14.5 15 15.8 12.5 Q17 10.5 18.5 10 A8 8 0 0 1 15 5.1"/><circle cx="7.5" cy="8" r="1.4"/><circle cx="11" cy="7" r="1.4"/><circle cx="8.5" cy="12" r="1.4"/><path d="M5 19 L19 5"/><circle cx="4" cy="20.5" r="1.2"/>', icOn:'<path fill-rule="evenodd" d="M15 5.1 A8 8 0 1 0 17.9 16 Q14.5 15 15.8 12.5 Q17 10.5 18.5 10 A8 8 0 0 1 15 5.1 Z M6.1 8 A1.4 1.4 0 1 0 8.9 8 A1.4 1.4 0 1 0 6.1 8 Z M9.6 7 A1.4 1.4 0 1 0 12.4 7 A1.4 1.4 0 1 0 9.6 7 Z M7.1 12 A1.4 1.4 0 1 0 9.9 12 A1.4 1.4 0 1 0 7.1 12 Z"/><g transform="rotate(-45 12 12)"><rect x="10.7" y="3" width="2.6" height="14" rx="1.3"/><path d="M10.7 17 L13.3 17 L12 20.5 Z"/><path class="edge" d="M10.7 3 L13.3 3 L13.3 17 L12 20.5 L10.7 17 Z"/></g>'},
+   ic:'<path class="fth" fill-rule="evenodd" d="M4 20.5 L8.5 17.5 C14 15.5 18 11 20 4 C15 6 11 10 8.5 14.5 L5.5 19 Z M12 13 L17.8 7.2 L16.8 6.2 L11 12 Z"/>', icOn:'<path fill-rule="evenodd" d="M4 20.5 L8.5 17.5 C14 15.5 18 11 20 4 C15 6 11 10 8.5 14.5 L5.5 19 Z M12 13 L17.8 7.2 L16.8 6.2 L11 12 Z"/>'},
   {t:"Tiradas", sub:"Tu tirada de hoy te espera", c:"#0EA5E9",
    ic:'<g transform="rotate(-12 9 12)"><rect x="4" y="5" width="10" height="14" rx="1.5"/></g><g transform="rotate(12 15 12)"><rect x="10" y="5" width="10" height="14" rx="1.5"/></g><rect x="7" y="3.5" width="10" height="15" rx="1.5"/>', icOn:'<g transform="rotate(-12 9 12)"><rect x="4" y="5" width="10" height="14" rx="1.5"/><rect class="edge" x="4" y="5" width="10" height="14" rx="1.5"/></g><g transform="rotate(12 15 12)"><rect x="10" y="5" width="10" height="14" rx="1.5"/><rect class="edge" x="10" y="5" width="10" height="14" rx="1.5"/></g><rect x="7" y="3.5" width="10" height="15" rx="1.5"/><rect class="edge" x="7" y="3.5" width="10" height="15" rx="1.5"/>'},
   {t:"Journal", sub:"Escribe lo que las cartas dicen", c:"#FFC93C",

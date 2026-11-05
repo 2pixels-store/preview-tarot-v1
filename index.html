@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tarot · Viaje del Loco — junta v1.14-dev14 (2026-11-05)</title>
+<title>Tarot · Viaje del Loco — junta v1.14-dev15 (2026-11-05)</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff;color:#111}
@@ -861,7 +861,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <div class="card">
       <div class="row">
         <span class="row-lbl" id="lblVersion">Versión</span>
-        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev14 (2026-11-05)</span>
+        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev15 (2026-11-05)</span>
       </div>
       <div class="row">
         <button class="rowbtn" id="noticeBtn" type="button"><span id="lblNotice">Aviso</span><span>›</span></button>
@@ -974,7 +974,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
   </section>
 
   <footer>
-    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev14 (2026-11-05)</div>
+    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev15 (2026-11-05)</div>
     <div class="seal">Crafted in NYC</div>
   </footer>
 </div>
@@ -2100,6 +2100,7 @@ let canvasIdxC = 2;
 let selectedColorC = PALETTE[0];
 let strokesC = []; let redoC = []; let toolC = "brush"; let widthC = 8; let drawingC = null;
 let pointersC = new Map(); let pinchC = null; let zoomC = 1, panXC = 0, panYC = 0;
+let panStoreC = {}; let lastTwoTapC = 0;
 let featuredC = "canvas";
 let refIdxC = null;
 
@@ -2491,6 +2492,7 @@ function renderMiBaraja(){
   }));
 }
 function showGalleryC(){
+  delete panStoreC[colorKeyC(canvasDeckC, canvasIdxC)];
   closeRefPanel(); closePrismaC();
   $("#cColorView").classList.add("off");
   $("#cRefView").classList.add("off");
@@ -2650,7 +2652,7 @@ function updateSizeC(){
 }
 function pinchUpdate(z0, d0, d, px0, py0, mx, my, m0x, m0y, side){
   const z = Math.max(1, Math.min(3, z0 * d / (d0 || 1)));
-  const lim = side * (z - 1) / 2 + 60;
+  const lim = side * (z - 1) / 2 + 120;
   const px = Math.max(-lim, Math.min(lim, px0 + (mx - m0x)));
   const py = Math.max(-lim, Math.min(lim, py0 + (my - m0y)));
   return [z, px, py];
@@ -2659,6 +2661,10 @@ function applyZoomC(){
   const fr = $("#canvasFrame"); if(!fr) return;
   fr.style.transform = (zoomC === 1 && !panXC && !panYC) ? "" : "translate(" + panXC + "px," + panYC + "px) scale(" + zoomC + ")";
   const zl = $("#cZoomLbl"); if(zl) zl.textContent = Math.round(zoomC * 100) + "%";
+}
+function recenterCanvasC(){
+  zoomC = 1; panXC = 0; panYC = 0; applyZoomC();
+  delete panStoreC[colorKeyC(canvasDeckC, canvasIdxC)];
 }
 function sizeStageC(){
   /* v1.14-dev2: el marco es full-screen por CSS (#cColorView fixed + .canvas-frame absolute inset:0);
@@ -2678,7 +2684,7 @@ function paintStart(ev){
     const pts = [...pointersC.values()];
     pinchC = {d0: Math.hypot(pts[0][0]-pts[1][0], pts[0][1]-pts[1][1]),
       m0: [(pts[0][0]+pts[1][0])/2, (pts[0][1]+pts[1][1])/2],
-      z0: zoomC, px0: panXC, py0: panYC};
+      z0: zoomC, px0: panXC, py0: panYC, t0: Date.now(), moved: 0};
     try{ cv.setPointerCapture(ev.pointerId); }catch(e){}
     return;
   }
@@ -2698,6 +2704,7 @@ function paintMove(ev){
     const pts = [...pointersC.values()];
     const d = Math.hypot(pts[0][0]-pts[1][0], pts[0][1]-pts[1][1]);
     const mx = (pts[0][0]+pts[1][0])/2, my = (pts[0][1]+pts[1][1])/2;
+    pinchC.moved = Math.max(pinchC.moved, Math.hypot(mx - pinchC.m0[0], my - pinchC.m0[1]), Math.abs(d - pinchC.d0));
     const side = $("#canvasFrame").clientWidth || 300;
     const r = pinchUpdate(pinchC.z0, pinchC.d0, d, pinchC.px0, pinchC.py0, mx, my, pinchC.m0[0], pinchC.m0[1], side);
     zoomC = r[0]; panXC = r[1]; panYC = r[2];
@@ -2717,8 +2724,14 @@ function paintMove(ev){
 function paintEnd(ev){
   if(ev && ev.pointerId !== undefined) pointersC.delete(ev.pointerId);
   if(pinchC && pointersC.size < 2){
+    const tap = pinchC.moved < 12 && (Date.now() - pinchC.t0) < 300;
     pinchC = null;
-    if(zoomC <= 1.05){ zoomC = 1; panXC = 0; panYC = 0; applyZoomC(); }
+    if(zoomC <= 1.05){ zoomC = 1; applyZoomC(); }
+    panStoreC[colorKeyC(canvasDeckC, canvasIdxC)] = {x: panXC, y: panYC};
+    if(tap){
+      if(Date.now() - lastTwoTapC < 350){ recenterCanvasC(); }
+      else lastTwoTapC = Date.now();
+    }
   }
   if(toolC === "dropper" && dropperDragC){
     const src = dropperDragC; dropperDragC = null; hideDropLoupe();
@@ -2776,7 +2789,9 @@ function showCanvasC(i, deck){
   if(saved && saved.strokes){ strokesC = saved.strokes; } else { strokesC = []; }
   redoC = [];
   covSetC = new Set();
-  zoomC = 1; panXC = 0; panYC = 0; pinchC = null; pointersC.clear(); applyZoomC();
+  const storedPan = panStoreC[colorKeyC(deck, i)];
+  zoomC = 1; panXC = storedPan ? storedPan.x : 0; panYC = storedPan ? storedPan.y : 0;
+  pinchC = null; pointersC.clear(); applyZoomC();
   $("#canvasImg").src = deck === "marsella" ? LINEART_M[i] : LINEART[i];
   $("#cTopName").textContent = cardNameC(i);
   $("#refPanelImg").src = CARD_IMG[NAMES_ES[i]];

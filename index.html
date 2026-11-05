@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tarot · Viaje del Loco — junta v1.14-dev13 (2026-11-04)</title>
+<title>Tarot · Viaje del Loco — junta v1.14-dev14 (2026-11-05)</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff;color:#111}
@@ -189,12 +189,25 @@ body.night footer .note,body.night footer .seal{color:#B9B3A6}
 .btn-new{display:block;width:100%;margin:18px 0 14px;background:#111;color:#FDFBF6;border:2px solid #111;border-radius:999px;padding:13px;font:inherit;font-size:15px;font-weight:800;cursor:pointer}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .chip{background:#fff;border:1.5px solid #111;border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;color:#111}
-.chip .cdot{width:7px;height:7px;border-radius:50%;background:#FFC93C;display:none;flex:none}
+.chip .cdot{width:7px;height:7px;border-radius:50%;background:#FFC93C;display:block;flex:none}
+.chip .cdot.t-tirada{background:#0EA5E9}
+.chip .cdot.t-coloreo{background:#EC1C8C}
+.chip .cdot.t-nota{background:#D9A400}
+body.night .chip .cdot.t-nota{background:#FFC93C}
 .chip.on{background:#111;color:#FDFBF6}
 .chip.on .cdot{display:block}
 .entry{background:#fff;border:2px solid #111;border-radius:22px;padding:16px 18px;margin-bottom:12px;cursor:pointer}
 .entry-date{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8A8578;font-weight:700}
 .entry-type{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8A8578;font-weight:700;margin-left:8px}
+.entry-type.t-tirada{color:#0EA5E9}
+.entry-type.t-coloreo{color:#EC1C8C}
+.entry-type.t-nota{color:#D9A400}
+body.night .entry-type.t-nota{color:#FFC93C}
+.entry-type .tdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:5px;vertical-align:1px}
+.entry-q{font-size:14px;line-height:1.45;color:#6E675A;font-style:italic;margin-top:4px}
+body.night .entry-q{color:#B9B3A6}
+.jgroup{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8A8578;font-weight:800;margin:18px 0 10px}
+body.night .jgroup{color:#B9B3A6}
 .entry-title{font-size:19px;font-weight:800;margin-top:6px;line-height:1.2}
 .cardchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .cardchip{border:1.5px solid #111;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:600}
@@ -504,9 +517,19 @@ body.night .cdock{border-color:#FDFBF6}
 .decktab.on{background:#111;color:#fff}
 #refPanelNote{font-size:13px;line-height:1.4;margin:8px 2px 0;text-align:center} #refPanelX{position:absolute;top:6px;right:6px;width:32px;height:32px;border-radius:50%;background:#fff;border:2px solid #E0DACA;font-size:20px;font-weight:800;line-height:1;color:#111;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2);z-index:2;padding:0;display:flex;align-items:center;justify-content:center}
 #refBigNote{color:#FDFBF6;font-size:14px;line-height:1.4;text-align:center;margin:8px 20px 0}
-#startDialog,#resetDialog{position:fixed;inset:0;background:rgba(17,17,17,.6);z-index:60;display:flex;align-items:center;justify-content:center;padding:24px}
+#startDialog,#resetDialog,#tSaveDlg{position:fixed;inset:0;background:rgba(17,17,17,.6);z-index:60;display:flex;align-items:center;justify-content:center;padding:24px}
 #startDialog .dlg,#resetDialog .dlg{background:#FDFBF6;border-radius:20px;padding:22px;max-width:340px;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.3)}
 #startDialog .dlg p,#resetDialog .dlg p{font-size:17px;font-weight:700;line-height:1.4;margin:0 0 16px}
+#tSaveDlg .dlg{background:#FDFBF6;border:2px solid #111;border-radius:20px;padding:22px;max-width:340px;width:100%;text-align:left;box-shadow:0 16px 40px rgba(0,0,0,.3)}
+#tSaveDlg .dlg h2{font-size:19px;font-weight:800;display:flex;align-items:center;gap:8px;margin:0 0 6px}
+#tSaveDlg .dlg h2 .ydot{background:#D9A400}
+#tSaveDlg .dlg label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8A8578;font-weight:700;margin:12px 0 6px}
+#tSaveDlg .dlg input[type=text]{width:100%;box-sizing:border-box;background:#fff;border:2px solid #111;border-radius:12px;padding:10px 12px;font:inherit;font-size:15px;color:#111}
+#tSaveDlg .dlg .btn-row{margin-top:18px}
+body.night #tSaveDlg .dlg{background:#1E1E1E;border-color:#FDFBF6}
+body.night #tSaveDlg .dlg h2 .ydot{background:#FFC93C}
+body.night #tSaveDlg .dlg label{color:#B9B3A6}
+body.night #tSaveDlg .dlg input[type=text]{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
 .csw{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.4);cursor:pointer;padding:0}
 .csw.on{box-shadow:0 0 0 2px #1E1E1E,0 0 0 4px #FDFBF6}
 
@@ -722,6 +745,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <button class="btn-ghost" id="jDBack" type="button">← Volver</button>
     <div style="margin-top:14px"><span class="entry-date" id="jDDate"></span><span class="entry-type" id="jDType"></span></div>
     <div class="entry-title" id="jDTitle"></div>
+    <div class="entry-q" id="jDQuestion"></div>
     <div class="cardchips" id="jDCards"></div>
     <p class="fulltext" id="jDText"></p>
     <textarea id="jDEdit" rows="6"></textarea>
@@ -837,7 +861,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <div class="card">
       <div class="row">
         <span class="row-lbl" id="lblVersion">Versión</span>
-        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev13 (2026-11-04)</span>
+        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev14 (2026-11-05)</span>
       </div>
       <div class="row">
         <button class="rowbtn" id="noticeBtn" type="button"><span id="lblNotice">Aviso</span><span>›</span></button>
@@ -930,6 +954,16 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <div class="btn-row"><button class="btn-ghost" id="dlgCancel" type="button">Cancelar</button><button class="btn-save" id="dlgConfirm" type="button">Sí, empezar de nuevo</button></div>
   </div>
 </div>
+<div id="tSaveDlg" class="off" role="dialog" aria-label="Guardar tirada en Journal">
+  <div class="dlg">
+    <h2><i class="ydot"></i><span id="tSaveDlgTitle">Guardar en Journal</span></h2>
+    <label id="tSaveDlgNameLbl" for="tSaveDlgName">Nombre</label>
+    <input type="text" id="tSaveDlgName" autocomplete="off">
+    <label id="tSaveDlgQLbl" for="tSaveDlgQ">Pregunta (opcional)</label>
+    <input type="text" id="tSaveDlgQ" autocomplete="off" placeholder="¿Me va bien en la entrevista?">
+    <div class="btn-row"><button class="btn-save" id="tSaveDlgSave" type="button">Guardar</button><button class="btn-ghost" id="tSaveDlgCancel" type="button">Cancelar</button></div>
+  </div>
+</div>
 
 <div id="refOverlay" class="off" role="dialog" aria-label="Referencia ampliada">
   <img id="refBigImg" alt="Referencia ampliada">
@@ -940,7 +974,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
   </section>
 
   <footer>
-    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev13 (2026-11-04)</div>
+    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev14 (2026-11-05)</div>
     <div class="seal">Crafted in NYC</div>
   </footer>
 </div>
@@ -967,9 +1001,10 @@ function toast(msg){
 const NAMES_ES = ["El Loco", "El Mago", "La Papisa", "La Emperatriz", "El Emperador", "El Hierofante", "Los Enamorados", "El Carro", "La Fuerza", "El Ermitaño", "La Rueda de la Fortuna", "La Justicia", "El Colgado", "La Muerte", "La Templanza", "El Diablo", "La Torre", "La Estrella", "La Luna", "El Sol", "El Juicio", "El Mundo"];
 const NAMES_EN = ["The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor", "The Hierophant", "The Lovers", "The Chariot", "Strength", "The Hermit", "Wheel of Fortune", "Justice", "The Hanged Man", "Death", "Temperance", "The Devil", "The Tower", "The Star", "The Moon", "The Sun", "Judgement", "The World"];
 function addJournalEntry(e){
-  journalEntries.unshift({id: nextJournalId++, type: e.type, date: new Date(), title: e.title, cards: e.cards || [], text: e.text || ""});
+  journalEntries.unshift({id: nextJournalId++, type: e.type, date: new Date(), title: e.title, cards: e.cards || [], text: e.text || "", question: e.question || ""});
   curFilter = "todas";
   renderAllJ();
+  saveJournalEntries();
 }
 function renderJourney(){
   const card = (lang === "en" ? JOURNEY_EN : JOURNEY)[JOURNEY_DAY - 1];
@@ -1339,12 +1374,12 @@ const I18N_T = {
     bellLbl:"Recordatorio", bellDay:"Hoy · Día ", bellLine:"Tu carta de hoy te espera",
     menuToday:"Carta de hoy", menuProgress:"Mi progreso", menuSettings:"Ajustes",
     toDay:"Cambiar a modo día", toNight:"Cambiar a modo noche", footNote:"Muestra · solo tiradas",
-    counts:{1:"1 carta", n:" cartas"}},
+    counts:{1:"1 carta", n:" cartas"}, dlgTitle:"Guardar en Journal", dlgName:"Nombre", dlgQ:"Pregunta (opcional)", dlgQPh:"¿Me va bien en la entrevista?", cancel:"Cancelar"},
   en: {sub:"Pick a spread and let the cards speak", tap:"Tap to deal", deck:"Deck · ", shuffling:"Shuffling…", shuffle:"Shuffle", reveal:"Reveal all", interp:"See interpretation", save:"Save to Journal", saved:"Saved to Journal", back:"Back", synth:"Synthesis", upright:"Upright", reversed:"Reversed", answer:"Answer",
     bellLbl:"Reminder", bellDay:"Today · Day ", bellLine:"Your card for today awaits",
     menuToday:"Today's card", menuProgress:"My progress", menuSettings:"Settings",
     toDay:"Switch to day mode", toNight:"Switch to night mode", footNote:"Sample · spreads only",
-    counts:{1:"1 card", n:" cards"}}
+    counts:{1:"1 card", n:" cards"}, dlgTitle:"Save to Journal", dlgName:"Name", dlgQ:"Question (optional)", dlgQPh:"Will the interview go well?", cancel:"Cancel"}
 };
 const C = (n, es, en, rev, gloss, mean, meanRev) => ({n:n, es:es, en:en, rev:rev, gloss:gloss, mean:mean, meanRev:meanRev});
 const SPREADS = [
@@ -1566,11 +1601,23 @@ $("#tInterpBtn").addEventListener("click", () => {
 $("#tRBack").addEventListener("click", () => { renderListT(); showViewT("tListView"); });
 $("#tIBack").addEventListener("click", () => showViewT("tRitualView"));
 $("#tSaveBtn").addEventListener("click", () => {
-  addJournalEntry({type: "tirada", title: cur.name[lang],
+  $("#tSaveDlgName").value = cur.name[lang];
+  $("#tSaveDlgQ").value = "";
+  $("#tSaveDlg").classList.remove("off");
+  $("#tSaveDlgName").focus();
+  $("#tSaveDlgName").select();
+});
+$("#tSaveDlgSave").addEventListener("click", () => {
+  const name = $("#tSaveDlgName").value.trim();
+  const q = $("#tSaveDlgQ").value.trim();
+  addJournalEntry({type: "tirada", title: name || cur.name[lang], question: q,
     cards: drawnCards.map((c, i) => cur.pos[lang][i] + " · " + cardNameT(c)),
     text: synthFor(cur, drawnCards)});
+  $("#tSaveDlg").classList.add("off");
   toast(I18N_T[lang].saved);
 });
+$("#tSaveDlgCancel").addEventListener("click", () => $("#tSaveDlg").classList.add("off"));
+$("#tSaveDlg").addEventListener("click", e => { if(e.target.id === "tSaveDlg") $("#tSaveDlg").classList.add("off"); });
 function applyTextsT(){
   const t = I18N_T[lang];
   $("#tSub").textContent = t.sub;
@@ -1580,6 +1627,11 @@ function applyTextsT(){
   $("#tRevealBtn").textContent = t.reveal;
   $("#tInterpBtn").textContent = t.interp;
   $("#tSaveBtn").textContent = t.save;
+  $("#tSaveDlgTitle").textContent = t.dlgTitle;
+  $("#tSaveDlgNameLbl").textContent = t.dlgName;
+  $("#tSaveDlgQLbl").textContent = t.dlgQ;
+  $("#tSaveDlgQ").placeholder = t.dlgQPh;
+  $("#tSaveDlgCancel").textContent = t.cancel;
   $("#tRBack").textContent = "← " + t.back;
   $("#tIBack").textContent = "← " + t.back;
   if(cur) { $("#tRTitle").textContent = cur.name[lang]; $("#tITitle").textContent = cur.name[lang]; updateCounter(); }
@@ -1593,7 +1645,7 @@ const I18N_J = {
     newNote:"Nueva nota", save:"Guardar", back:"Volver", cancel:"Cancelar",
     delEntry:"Borrar entrada", jDelConfirm:"¿Borrar esta entrada? No se puede deshacer.", jDelYes:"Borrar", deleted:"Entrada borrada",
     titlePh:"Título de la nota", textPh:"Escribe aquí…",
-    today:"Hoy", yesterday:"Ayer", empty:"Sin entradas en este filtro.",
+    today:"Hoy", yesterday:"Ayer", week:"Esta semana", earlier:"Antes", empty:"Sin entradas en este filtro.",
     bellLbl:"Recordatorio", bellDay:"Hoy · Día ", bellLine:"Tu carta de hoy te espera",
     menuToday:"Carta de hoy", menuProgress:"Mi progreso", menuSettings:"Ajustes",
     toDay:"Cambiar a modo día", toNight:"Cambiar a modo noche", footNote:"Muestra · solo journal"},
@@ -1601,7 +1653,7 @@ const I18N_J = {
     newNote:"New note", save:"Save", back:"Back", cancel:"Cancel",
     delEntry:"Delete entry", jDelConfirm:"Delete this entry? This can't be undone.", jDelYes:"Delete", deleted:"Entry deleted",
     titlePh:"Note title", textPh:"Write here…",
-    today:"Today", yesterday:"Yesterday", empty:"No journalEntries in this filter.",
+    today:"Today", yesterday:"Yesterday", week:"This week", earlier:"Earlier", empty:"No journalEntries in this filter.",
     bellLbl:"Reminder", bellDay:"Today · Day ", bellLine:"Your card for today awaits",
     menuToday:"Today's card", menuProgress:"My progress", menuSettings:"Settings",
     toDay:"Switch to day mode", toNight:"Switch to night mode", footNote:"Sample · journal only"}
@@ -1616,7 +1668,7 @@ function fmtDate(d){
   return d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear();
 }
 function daysAgo(n){ const d = new Date(); d.setDate(d.getDate() - n); return d; }
-let journalEntries = [
+const SAMPLE_JOURNAL = [
   {id:1, type:"tirada", date:daysAgo(0), title:"Tirada de 3 cartas",
    cards:["Pasado · El Loco", "Presente · La Templanza", "Futuro · La Estrella"],
    text:"Hoy la tirada salió clara: el pasado fue un salto sin red, el presente pide mezcla con calma y el futuro trae esperanza. Me quedo con la Templanza como tarea del día: no apurar nada, medir cada paso."},
@@ -1633,7 +1685,30 @@ let journalEntries = [
    cards:["El Loco"],
    text:"El Loco fue el primero que me atreví a colorear completo. El hatillo quedó amarillo fuerte y el perrito casi no se ve, pero me gusta así: imperfecto y alegre, como la carta."}
 ];
-let nextJournalId = 6;
+const JOURNAL_KEY = "tarotJournalV1";
+function loadJournalEntries(){
+  try{
+    const raw = localStorage.getItem(JOURNAL_KEY);
+    if(!raw) return null;
+    const arr = JSON.parse(raw);
+    if(!Array.isArray(arr) || !arr.length) return null;
+    const ok = {tirada:1, coloreo:1, nota:1};
+    return arr.map(e => {
+      const d = new Date(e.date);
+      return {id: e.id, type: ok[e.type] ? e.type : "nota", date: isNaN(d) ? new Date() : d,
+        title: e.title || "", cards: Array.isArray(e.cards) ? e.cards : [], text: e.text || "", question: e.question || ""};
+    });
+  }catch(_){ return null; }
+}
+function saveJournalEntries(){
+  try{
+    localStorage.setItem(JOURNAL_KEY, JSON.stringify(journalEntries.map(e => ({id: e.id, type: e.type,
+      date: (e.date instanceof Date ? e.date : new Date(e.date)).toISOString(),
+      title: e.title, cards: e.cards || [], text: e.text || "", question: e.question || ""}))));
+  }catch(_){}
+}
+let journalEntries = loadJournalEntries() || SAMPLE_JOURNAL.map(e => ({...e, date: new Date(e.date)}));
+let nextJournalId = journalEntries.reduce((m, e) => Math.max(m, e.id), 0) + 1;
 let curFilter = "todas";
 let openId = null;
 function typeLabel(t){ return I18N_J[lang].types[t]; }
@@ -1647,11 +1722,19 @@ function renderChipsJ(){
   const counts = {todas: journalEntries.length, tirada: 0, coloreo: 0, nota: 0};
   journalEntries.forEach(e => { counts[e.type]++; });
   const t = I18N_J[lang];
-  const defs = [["todas", t.filters.todas], ["tirada", t.filters.tirada], ["coloreo", t.filters.coloreo], ["nota", t.filters.nota]];
+  const defs = [["todas", t.filters.todas, ""], ["tirada", t.filters.tirada, "tirada"], ["coloreo", t.filters.coloreo, "coloreo"], ["nota", t.filters.nota, "nota"]];
   $("#jChips").innerHTML = defs.map(d =>
-    '<button type="button" class="chip' + (curFilter === d[0] ? " on" : "") + '" data-f="' + d[0] + '"><i class="cdot"></i>' + d[1] + " (" + counts[d[0]] + ")</button>"
+    '<button type="button" class="chip' + (curFilter === d[0] ? " on" : "") + '" data-f="' + d[0] + '">' + (d[2] ? '<i class="cdot t-' + d[2] + '"></i>' : "") + d[1] + " (" + counts[d[0]] + ")</button>"
   ).join("");
   $$("#jChips .chip").forEach(b => b.addEventListener("click", () => { curFilter = b.dataset.f; renderAllJ(); }));
+}
+function timeGroup(d){
+  const start = x => new Date(x.getFullYear(), x.getMonth(), x.getDate());
+  const diff = Math.round((start(new Date()) - start(d)) / 86400000);
+  if(diff <= 0) return "hoy";
+  if(diff === 1) return "ayer";
+  if(diff <= 7) return "semana";
+  return "antes";
 }
 function renderListJ(){
   const t = I18N_J[lang];
@@ -1660,13 +1743,22 @@ function renderListJ(){
     $("#jEntryList").innerHTML = '<p class="empty">' + t.empty + "</p>";
     return;
   }
-  $("#jEntryList").innerHTML = list.map(e =>
-    '<article class="entry" data-id="' + e.id + '">'
-    + '<span class="entry-date">' + esc(fmtDate(e.date)) + '</span><span class="entry-type">' + esc(typeLabel(e.type)) + "</span>"
-    + '<div class="entry-title">' + esc(e.title) + "</div>"
-    + (e.cards.length ? '<div class="cardchips">' + cardChips(e.cards, 3) + "</div>" : "")
-    + '<p class="ex">' + esc(e.text) + "</p></article>"
-  ).join("");
+  const groups = [["hoy", t.today], ["ayer", t.yesterday], ["semana", t.week], ["antes", t.earlier]];
+  let h = "";
+  groups.forEach(g => {
+    const items = list.filter(e => timeGroup(e.date) === g[0]);
+    if(!items.length) return;
+    h += '<h3 class="jgroup">' + esc(g[1]) + "</h3>";
+    h += items.map(e =>
+      '<article class="entry" data-id="' + e.id + '">'
+      + '<span class="entry-date">' + esc(fmtDate(e.date)) + '</span><span class="entry-type t-' + e.type + '"><i class="tdot"></i>' + esc(typeLabel(e.type)) + "</span>"
+      + '<div class="entry-title">' + esc(e.title) + "</div>"
+      + (e.question ? '<div class="entry-q">&ldquo;' + esc(e.question) + '&rdquo;</div>' : "")
+      + (e.cards.length ? '<div class="cardchips">' + cardChips(e.cards, 3) + "</div>" : "")
+      + '<p class="ex">' + esc(e.text) + "</p></article>"
+    ).join("");
+  });
+  $("#jEntryList").innerHTML = h;
   $$("#jEntryList .entry").forEach(el => el.addEventListener("click", () => openDetailJ(+el.dataset.id)));
 }
 function renderAllJ(){ renderChipsJ(); renderListJ(); }
@@ -1679,7 +1771,11 @@ function openDetailJ(id){
   openId = id;
   $("#jDDate").textContent = fmtDate(e.date);
   $("#jDType").textContent = typeLabel(e.type);
+  $("#jDType").className = "entry-type t-" + e.type;
   $("#jDTitle").textContent = e.title;
+  const qEl = $("#jDQuestion");
+  qEl.textContent = e.question ? "\u201C" + e.question + "\u201D" : "";
+  qEl.style.display = e.question ? "" : "none";
   $("#jDCards").innerHTML = e.cards.length ? cardChips(e.cards, 0) : "";
   $("#jDText").textContent = e.text;
   $("#jDEdit").value = e.text;
@@ -1691,6 +1787,7 @@ $("#jDSave").addEventListener("click", () => {
   const e = journalEntries.find(x => x.id === openId);
   if(!e) return;
   e.text = $("#jDEdit").value;
+  saveJournalEntries();
   $("#jDelConfirm").classList.add("off");
   renderListJ();
   showViewJ("jListView");
@@ -1699,6 +1796,7 @@ $("#jDDelete").addEventListener("click", () => { $("#jDelConfirm").classList.rem
 $("#jDelNo").addEventListener("click", () => { $("#jDelConfirm").classList.add("off"); });
 $("#jDelYes").addEventListener("click", () => {
   journalEntries = journalEntries.filter(x => x.id !== openId);
+  saveJournalEntries();
   openId = null;
   $("#jDelConfirm").classList.add("off");
   renderAllJ();
@@ -1716,6 +1814,7 @@ $("#jCSave").addEventListener("click", () => {
   const text = $("#jCText").value.trim();
   if(!title && !text) return;
   journalEntries.unshift({id: nextJournalId++, type: "nota", date: new Date(), title: title || I18N_J[lang].types.nota, cards: [], text: text});
+  saveJournalEntries();
   curFilter = "todas";
   renderAllJ();
   showViewJ("jListView");
@@ -1727,6 +1826,7 @@ function applyTextsJ(){
   $("#jDBack").textContent = "← " + t.back;
   $("#jDSave").textContent = t.save;
   $("#jCSave").textContent = t.save;
+  $("#tSaveDlgSave").textContent = t.save;
   $("#jCCancel").textContent = t.cancel;
   $("#jDDelete").textContent = t.delEntry;
   $("#jDelConfirmText").textContent = t.jDelConfirm;
@@ -1980,6 +2080,7 @@ $("#sDelYes").addEventListener("click", () => {
   journalEntries.length = 0;
   INITIAL_JOURNAL.forEach(e => journalEntries.push({...e}));
   nextJournalId = journalEntries.reduce((m, e) => Math.max(m, e.id), 0) + 1;
+  saveJournalEntries();
   strokesC = []; redrawPaintC();
   renderAllJ();
   setNight(false);
@@ -2790,7 +2891,7 @@ $("#segDayBtn").addEventListener("click", () => setNight(false));
 $("#segNightBtn").addEventListener("click", () => setNight(true));
 $("#journeyGo").addEventListener("click", () => showView('guia'));
 document.querySelector(".today-arrow").addEventListener("click", () => { showView('tiradas'); openRitualT('day'); });
-const INITIAL_JOURNAL = journalEntries.map(e => ({...e}));
+const INITIAL_JOURNAL = SAMPLE_JOURNAL.map(e => ({...e, date: new Date(e.date)}));
 $("#todayImg").src = THUMBS[14];
 renderJourney(); applyTextsH(); fillBell(); fillMenuLabels();
 applyTextsT(); applyTextsJ(); renderAllJ(); applyTextsG(); applyTextsS();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tarot · Viaje del Loco — junta v1.14-dev15 (2026-11-05)</title>
+<title>Tarot · Viaje del Loco — junta v1.14-dev16 (2026-11-06)</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff;color:#111}
@@ -76,6 +76,7 @@ footer .seal{font-size:11px;color:#8A8578;margin-top:6px;letter-spacing:.08em}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .topbar-brand{font-size:13px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
 .topbar-group{display:flex;align-items:center;gap:10px}
+.homepill{border:none;background:#fff;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.14);height:32px;min-width:32px;padding:0 10px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#111}
 .lang{display:flex;border:1px solid #111;border-radius:999px;overflow:hidden}
 .lang-btn{background:none;border:none;padding:4px 9px;font-size:12px;font-weight:800;letter-spacing:.04em;color:#8A8578;cursor:pointer}
 .lang-btn.on{background:#111;color:#FDFBF6}
@@ -598,6 +599,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
   <header>
     <div class="topbar">
       <button class="topbar-brand" id="brandHome" type="button">Tarot · Viaje del Loco</button>
+      <button class="homepill" id="homeBtn" type="button" aria-label="Ir a inicio"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3.5L22 12h-2.5v8.5h-5V15h-5v5.5H4.5V12H2z" fill="currentColor"/></svg></button>
       <div class="topbar-group">
         <div class="lang" role="group" aria-label="Idioma">
           <button type="button" class="lang-btn on" data-lang="es">ES</button>
@@ -861,7 +863,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <div class="card">
       <div class="row">
         <span class="row-lbl" id="lblVersion">Versión</span>
-        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev15 (2026-11-05)</span>
+        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev16 (2026-11-06)</span>
       </div>
       <div class="row">
         <button class="rowbtn" id="noticeBtn" type="button"><span id="lblNotice">Aviso</span><span>›</span></button>
@@ -895,6 +897,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
 <!-- Lienzo -->
 <section id="cColorView" class="off">
   <div class="ctopbar">
+    <button class="tpill" id="cHomeBtn" type="button" aria-label="Ir a inicio"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3.5L22 12h-2.5v8.5h-5V15h-5v5.5H4.5V12H2z" fill="currentColor"/></svg></button>
     <button class="tpill" id="cBackBtn" type="button" aria-label="Volver a la galería">←</button>
     <button class="tpill tref" id="cRefBtn" type="button" aria-label="Referencia">REF <span class="chev" id="cRefChev">▼</span></button>
     <span class="tname" id="cTopName"></span>
@@ -974,7 +977,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
   </section>
 
   <footer>
-    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev15 (2026-11-05)</div>
+    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev16 (2026-11-06)</div>
     <div class="seal">Crafted in NYC</div>
   </footer>
 </div>
@@ -1007,7 +1010,7 @@ function addJournalEntry(e){
   saveJournalEntries();
 }
 function renderJourney(){
-  const card = (lang === "en" ? JOURNEY_EN : JOURNEY)[JOURNEY_DAY - 1];
+  const card = (lang === "en" ? JOURNEY_EN : JOURNEY)[dayIdxC()];
   $("#journeyNum").innerHTML = JOURNEY_DAY + ' <span>/ 22</span>';
   $("#journeyBar").style.width = (JOURNEY_DAY / 22 * 100).toFixed(1) + "%";
   $("#todayName").textContent = card[0];
@@ -2118,6 +2121,7 @@ function colorKeyC(deck, i){ return deck + ":" + i; }
 function syncDeckTabs(){ const r = $("#deckTabRider"), m = $("#deckTabMarsella"); if(r) r.classList.toggle("on", deckC === "rider"); if(m) m.classList.toggle("on", deckC === "marsella"); }
 let refPtrsC = new Map();
 let refPinchC = null;
+let refDragC = null; /* {id, x0, y0, left0, top0} arrastre del panel Ref con un dedo (dev16) */
 let covSetC = new Set();
 let saveTimerC = null;
 const COLOR_KEY = "tarotColorV1";
@@ -2214,7 +2218,8 @@ function syncWellC(){ const d = $("#cWellDot"); if(d) d.style.background = selec
 function setToolC(k){
   if(k === "dropper") prevToolC = (toolC === "dropper") ? prevToolC : toolC;
   toolC = k;
-  hideDropLoupe(); dropperDragC = null;
+  if(k === "dropper") showDropLoupeAtLast();
+  else { hideDropLoupe(); dropperDragC = null; }
   closePrismaC();
   renderToolsC();
 }
@@ -2300,7 +2305,7 @@ function toggleRefPanel(){ refOpenC ? closeRefPanel() : openRefPanel(); }
 function refPanelDown(ev){
   if(ev.target.closest && ev.target.closest("#refPanelX")) return;
   if(toolC === "dropper"){
-    if(dropperDragC){ hideDropLoupe(); dropperDragC = null; return; }
+    if(dropperDragC){ return; }
     dropperDragC = "ref"; showDropLoupeRef(ev);
     try{ ev.target.setPointerCapture(ev.pointerId); }catch(e){}
     return;
@@ -2309,6 +2314,11 @@ function refPanelDown(ev){
   if(refPtrsC.size === 2){
     const pts = [...refPtrsC.values()];
     refPinchC = {d0: Math.hypot(pts[0][0] - pts[1][0], pts[0][1] - pts[1][1]), s0: refScaleC};
+    refDragC = null;
+    try{ ev.target.setPointerCapture(ev.pointerId); }catch(e){}
+  } else if(refPtrsC.size === 1){
+    const p = $("#refPanel");
+    refDragC = {id: ev.pointerId, x0: ev.clientX, y0: ev.clientY, left0: p ? p.offsetLeft : 12, top0: p ? p.offsetTop : 0};
     try{ ev.target.setPointerCapture(ev.pointerId); }catch(e){}
   }
 }
@@ -2319,18 +2329,30 @@ function refPanelMove(ev){
   if(refPinchC && refPtrsC.size >= 2){
     const pts = [...refPtrsC.values()];
     const d = Math.hypot(pts[0][0] - pts[1][0], pts[0][1] - pts[1][1]);
-    refScaleC = Math.max(0.6, Math.min(1.8, refPinchC.s0 * d / (refPinchC.d0 || 1)));
+    refScaleC = Math.max(0.6, Math.min(3, refPinchC.s0 * d / (refPinchC.d0 || 1)));
     $("#refPanel").style.transform = "scale(" + refScaleC + ")";
+    return;
+  }
+  if(refDragC && refDragC.id === ev.pointerId){
+    const p = $("#refPanel"); if(!p) return;
+    const w = p.getBoundingClientRect().width, h = p.getBoundingClientRect().height;
+    let nx = refDragC.left0 + (ev.clientX - refDragC.x0);
+    let ny = refDragC.top0 + (ev.clientY - refDragC.y0);
+    nx = Math.max(48 - w, Math.min(window.innerWidth - 48, nx));
+    ny = Math.max(0, Math.min(window.innerHeight - 48, ny));
+    p.style.left = nx + "px"; p.style.top = ny + "px";
   }
 }
 function refPanelUp(ev){
   if(toolC === "dropper" && dropperDragC === "ref"){
-    dropperDragC = null; hideDropLoupe();
+    dropperDragC = null;
     if(ev.type === "pointerup") sampleRefC(ev);
+    if(ev && dropLoupeCacheC) updateDropLoupe(ev, true);
     return;
   }
   refPtrsC.delete(ev.pointerId);
   if(refPtrsC.size < 2) refPinchC = null;
+  if(refDragC && refDragC.id === ev.pointerId) refDragC = null;
 }
 function sampleCanvasC(ev){
   const t = I18N_C[lang];
@@ -2342,7 +2364,7 @@ function sampleCanvasC(ev){
   try{ px = ctx.getImageData(Math.round(pos[0] * dpr), Math.round(pos[1] * dpr), 1, 1).data; }catch(e){}
   if(!px || px[3] < 12){ toast(t.dropEmpty); return; }
   selectedColorC = rgbToHex(px[0], px[1], px[2]);
-  toolC = prevToolC || "brush"; renderToolsC(); toast(t.dropCopied);
+  renderToolsC(); toast(t.dropCopied);
 }
 function sampleRefC(ev){
   const t = I18N_C[lang];
@@ -2359,12 +2381,21 @@ function sampleRefC(ev){
     if(px[3] < 12){ toast(t.dropEmpty); return; }
     selectedColorC = rgbToHex(px[0], px[1], px[2]);
   }catch(e){ toast(t.dropEmpty); return; }
-  toolC = prevToolC || "brush"; renderToolsC(); toast(t.dropCopied);
+  renderToolsC(); toast(t.dropCopied);
 }
 /* v1.14-dev3: lupa del gotero (estilo Photoshop) — vista ampliada + color muestreado; NO cambia el muestreo */
 let dropperDragC = null;
 let dropLoupeCacheC = null;
 function hideDropLoupe(){ const l = $("#dropLoupe"); if(l) l.classList.add("off"); }
+/* v1.14-dev16: lupa persistente — mientras el gotero está activo, la lupa se queda visible antes y después de copiar */
+let dropLoupePosC = null; /* {x, y} última posición de la lupa sobre el lienzo */
+function showDropLoupeAtLast(){
+  const pc = $("#paintCanvas"); if(!pc) return;
+  const r = pc.getBoundingClientRect();
+  const x = (dropLoupePosC && dropLoupePosC.x !== undefined) ? dropLoupePosC.x : r.left + r.width / 2;
+  const y = (dropLoupePosC && dropLoupePosC.y !== undefined) ? dropLoupePosC.y : r.top + r.height / 2;
+  showDropLoupe({clientX: x, clientY: y});
+}
 function dropStrokeSampleAt(clientX, clientY){
   const pc = $("#paintCanvas"); if(!pc) return null;
   const ctx = pc.getContext("2d"); if(!ctx) return null;
@@ -2424,6 +2455,7 @@ function updateDropLoupe(ev, refMode){
   if(top + L > vh - 4) top = Math.max(4, vh - L - 4);
   left = Math.max(4, Math.min(vw - L - 4, left));
   l.style.left = left + "px"; l.style.top = top + "px";
+  if(!refMode) dropLoupePosC = {x: ev.clientX, y: ev.clientY};
 }
 function showDropLoupe(ev){
   const cache = buildDropLoupeCache(); if(!cache) return;
@@ -2466,10 +2498,10 @@ function renderMiBaraja(){
   $("#mProg").textContent = done + " " + t.of22;
   $("#mBarFill").style.width = (done / 22 * 100).toFixed(1) + "%";
   $("#mDayLbl").textContent = t.dayCard;
-  $("#mDayName").textContent = cardNameC(14);
+  $("#mDayName").textContent = cardNameC(dayIdxC());
   $("#mDayHint").textContent = t.dayHint;
-  $("#mDayImg").src = THUMBS[14];
-  $("#mDayImg").alt = cardNameC(14);
+  $("#mDayImg").src = THUMBS[dayIdxC()];
+  $("#mDayImg").alt = cardNameC(dayIdxC());
   $("#mFoot").textContent = t.galleryHint;
   $("#cGrid").innerHTML = tiles.map(o => {
     let img, badge = "";
@@ -2478,7 +2510,7 @@ function renderMiBaraja(){
     else if(o.state === "prog"){ img = o.thumb || THUMBS[o.i]; badge = '<b class="pct">' + o.pct + '%</b>'; }
     else if(deckC === "marsella"){ img = o.thumb || THUMBS[o.i]; badge = '<b class="chk">✓</b>'; }
     else { img = THUMBS[o.i]; badge = '<b class="chk">✓</b>'; }
-    const hoy = o.i === 14 ? '<b class="hoy">' + t.todayMark + '</b>' : '';
+    const hoy = o.i === dayIdxC() ? '<b class="hoy">' + t.todayMark + '</b>' : '';
     const cur = (featuredC === "canvas" && o.i === canvasIdxC && canvasDeckC === deckC) ? ' cur' : '';
     const gray = !o.hasCanvas ? ' gray' : '';
     return '<button type="button" class="gitem' + gray + cur + '" data-i="' + o.i + '">' + hoy + '<img src="' + img + '" alt="' + cardNameC(o.i) + '">' + badge + '<span>' + cardNameC(o.i) + '</span></button>';
@@ -2520,9 +2552,18 @@ function resetCardC(i, deck){
   hideDialogs();
   showCanvasC(i, deck);
 }
+/* v1.14-dev16: rotación diaria de la carta del día — determinista por fecha local */
+function dayIdxC(){
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const start = new Date(2026, 0, 1);
+  const days = Math.floor((today - start) / 86400000);
+  return ((days % 22) + 22) % 22;
+}
 function openDayCard(){
-  if(LINEART[14] !== undefined) showCanvasC(14, "rider");
-  else { toast(I18N_C[lang].dayNoCanvas); showRefC(14); }
+  const di = dayIdxC();
+  if(LINEART[di] !== undefined) showCanvasC(di, "rider");
+  else { toast(I18N_C[lang].dayNoCanvas); showRefC(di); }
 }
 
 const I18N_C = {
@@ -2679,7 +2720,7 @@ function paintStart(ev){
   if(!cv.width) sizePaintC();
   pointersC.set(ev.pointerId, [ev.clientX, ev.clientY]);
   if(pointersC.size === 2){
-    hideDropLoupe(); dropperDragC = null;
+    dropperDragC = null;
     drawingC = null; redrawPaintC();
     const pts = [...pointersC.values()];
     pinchC = {d0: Math.hypot(pts[0][0]-pts[1][0], pts[0][1]-pts[1][1]),
@@ -2688,7 +2729,7 @@ function paintStart(ev){
     try{ cv.setPointerCapture(ev.pointerId); }catch(e){}
     return;
   }
-  if(pointersC.size > 2){ hideDropLoupe(); dropperDragC = null; return; }
+  if(pointersC.size > 2){ dropperDragC = null; return; }
   if(toolC === "dropper"){ dropperDragC = "canvas"; showDropLoupe(ev); try{ cv.setPointerCapture(ev.pointerId); }catch(e){} return; }
   const [x, y] = paintPos(ev);
   drawingC = {tool: toolC, color: selectedColorC, width: widthC, pts: [[x, y]]};
@@ -2734,8 +2775,9 @@ function paintEnd(ev){
     }
   }
   if(toolC === "dropper" && dropperDragC){
-    const src = dropperDragC; dropperDragC = null; hideDropLoupe();
+    const src = dropperDragC; dropperDragC = null;
     if(ev && ev.type === "pointerup"){ if(src === "canvas") sampleCanvasC(ev); else sampleRefC(ev); }
+    if(ev && dropLoupeCacheC) updateDropLoupe(ev, src === "ref");
     return;
   }
   if(!drawingC) return;
@@ -2805,6 +2847,7 @@ function showCanvasC(i, deck){
   renderMiBaraja(); renderToolsC(); updateUndoRedoC();
   sizePaintC();
   recomputeCovC();
+  if(toolC === "dropper") requestAnimationFrame(() => showDropLoupeAtLast());
 }
 function showRefC(i){
   featuredC = "ref";
@@ -2887,6 +2930,8 @@ $("#pSquare").addEventListener("pointerup", prismaDragEnd);
 
 
 $("#brandHome").addEventListener("click", () => showView('home'));
+$("#homeBtn").addEventListener("click", () => showView('home'));
+$("#cHomeBtn").addEventListener("click", () => showView('home'));
 $$(".lang-btn").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
 $("#themeBtn").addEventListener("click", () => setNight(!night));
 $("#bellBtn").addEventListener("click", () => togglePanel("#bellPanel"));
@@ -2907,7 +2952,7 @@ $("#segNightBtn").addEventListener("click", () => setNight(true));
 $("#journeyGo").addEventListener("click", () => showView('guia'));
 document.querySelector(".today-arrow").addEventListener("click", () => { showView('tiradas'); openRitualT('day'); });
 const INITIAL_JOURNAL = SAMPLE_JOURNAL.map(e => ({...e, date: new Date(e.date)}));
-$("#todayImg").src = THUMBS[14];
+$("#todayImg").src = THUMBS[dayIdxC()];
 renderJourney(); applyTextsH(); fillBell(); fillMenuLabels();
 applyTextsT(); applyTextsJ(); renderAllJ(); applyTextsG(); applyTextsS();
 applyTextsC(); updateSizeC(); showGalleryC();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tarot · Viaje del Loco — junta v1.14-dev17 (2026-11-07)</title>
+<title>Tarot · Viaje del Loco — junta v1.14-dev18 (2026-11-08)</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff;color:#111}
@@ -404,8 +404,47 @@ body.night .tool-btn.on{background:#FDFBF6;color:#111}
 .dealt-back{transform:rotateY(180deg)}
 .dealt-face img{width:100%;height:100%;object-fit:cover;border-radius:12px;display:block;box-shadow:0 6px 16px rgba(0,0,0,.25)}
 .dealt-front img.rev{transform:rotate(180deg)}
-@keyframes flipIn{from{transform:rotateY(180deg)}to{transform:rotateY(0deg)}}
+@keyframes flipIn{0%{transform:rotateY(180deg) translateY(0) scale(1);box-shadow:0 2px 6px rgba(0,0,0,.15)}35%{transform:rotateY(90deg) translateY(-8px) scale(1.03);box-shadow:0 14px 28px rgba(0,0,0,.28)}75%{transform:rotateY(-6deg) translateY(0) scale(1.01);box-shadow:0 6px 14px rgba(0,0,0,.2)}100%{transform:rotateY(0deg) translateY(0) scale(1);box-shadow:0 2px 6px rgba(0,0,0,.15)}}
 @media (prefers-reduced-motion:reduce){.dealt-flip{animation:none}}
+/* --- dev18: transiciones de vista, micro-animaciones y mascota --- */
+html,body{overflow-x:hidden}
+.view-leaving{position:absolute;left:0;right:0;z-index:5;pointer-events:none}
+.view-in-right{animation:viewInRight .3s ease-out}
+.view-in-left{animation:viewInLeft .3s ease-out}
+.view-out-left{animation:viewOutLeft .3s ease-out forwards}
+.view-out-right{animation:viewOutRight .3s ease-out forwards}
+@keyframes viewInRight{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes viewInLeft{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+@keyframes viewOutLeft{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+@keyframes viewOutRight{from{transform:translateX(0)}to{transform:translateX(100%)}}
+.tsaved.save-pop{animation:savePop .45s cubic-bezier(.34,1.56,.64,1)}
+.svchk{display:inline-block;animation:chkDraw .4s ease}
+@keyframes savePop{0%{transform:scale(.8);opacity:.5}60%{transform:scale(1.05);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes chkDraw{0%{transform:scale(0) rotate(-25deg)}70%{transform:scale(1.2) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes chkPop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.18)}100%{transform:scale(1);opacity:1}}
+.switch{width:52px;height:30px;border-radius:999px;border:2px solid #111;background:#E8E4D8;position:relative;flex:none;cursor:pointer;padding:0;transition:background .2s ease}
+.switch span{position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #111;transition:left .2s ease}
+.switch.on{background:#56A100}
+.switch.on span{left:24px}
+.masc-row{display:flex;justify-content:center;padding:8px 0 2px}
+.masc-row svg{width:84px;height:auto;display:block}
+.masc-tail{transform-box:fill-box;transform-origin:85% 85%}
+.masc-eye{transform-box:fill-box;transform-origin:center}
+.masc-head{transform-box:fill-box;transform-origin:50% 90%}
+.masc-shadow{transform-box:fill-box;transform-origin:center}
+.masc-journal .masc-tail{animation:mascWag 1.4s ease-in-out infinite}
+.masc-journal .masc-shadow{animation:mascShadow 1.4s ease-in-out infinite}
+.masc-intro .masc-eye{animation:mascWink 6s ease-in-out infinite}
+.masc-head.nod-once{animation:mascNod .7s ease}
+@keyframes mascWag{0%,100%{transform:rotate(-9deg)}50%{transform:rotate(11deg)}}
+@keyframes mascShadow{0%,100%{transform:scaleX(1)}50%{transform:scaleX(1.07) translateX(1px)}}
+@keyframes mascWink{0%,88%,100%{transform:scaleY(1)}92%,96%{transform:scaleY(.08)}}
+@keyframes mascNod{0%{transform:rotate(0)}30%{transform:rotate(9deg)}60%{transform:rotate(-2deg)}100%{transform:rotate(0)}}
+.done-chip{position:fixed;left:50%;top:76px;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:8px;background:#fff;border:2px solid #111;border-radius:999px;padding:6px 14px 6px 8px;box-shadow:0 8px 24px rgba(0,0,0,.2);pointer-events:none;animation:donePop .4s cubic-bezier(.34,1.56,.64,1)}
+.done-chip svg{width:46px;height:auto;display:block}
+.done-txt{font-size:14px;font-weight:800;white-space:nowrap}
+@keyframes donePop{0%{transform:translateX(-50%) scale(.7);opacity:0}70%{transform:translateX(-50%) scale(1.06)}100%{transform:translateX(-50%) scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.view-in-right,.view-in-left,.view-out-left,.view-out-right,.tsaved.save-pop,.svchk,.gitem .chk,.masc-tail,.masc-shadow,.masc-eye,.masc-head{animation:none!important}}
 
 .shape-single .dealt-card{max-width:180px}
 
@@ -515,7 +554,7 @@ body.night .cdock{border-color:#FDFBF6}
 .gitem{position:relative}
 .gitem.gray img{filter:grayscale(1)}
 .gitem .pct{position:absolute;top:8px;right:8px;background:#232323;color:#fff;font-size:11px;font-weight:800;border-radius:99px;padding:4px 9px;z-index:2}
-.gitem .chk{position:absolute;top:6px;right:6px;background:#EC1C8C;color:#fff;font-size:14px;font-weight:800;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2}
+.gitem .chk{position:absolute;top:6px;right:6px;background:#EC1C8C;color:#fff;font-size:14px;font-weight:800;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:2;animation:chkPop .45s cubic-bezier(.34,1.56,.64,1)}
 .gitem .hoy{position:absolute;top:8px;left:8px;background:#fff;color:#EC1C8C;font-size:10px;font-weight:800;border-radius:99px;padding:4px 8px;border:1.5px solid #EC1C8C;z-index:2}
 .gitem.cur{outline:3px solid #EC1C8C;outline-offset:1px}
 .decktabs{display:flex;gap:8px;margin-top:12px}
@@ -681,7 +720,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <p class="wheel-hint" id="wheelHint">Arrastra para girar · toca un segmento para subirlo.<br>Toca el centro para entrar en la sección.</p>
   </section>
 
-  
+  <div class="masc-row masc-intro" id="homeMascot" aria-hidden="true"></div>
   </section>
 
   <section id="view-tiradas" class="off">
@@ -849,6 +888,16 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
   </section>
 
   <section class="sec">
+    <div class="sec-lbl" id="lblRem">Recordatorios</div>
+    <div class="card">
+      <div class="row">
+        <span class="row-lbl" id="lblRemSw">Campana y avisos de la carta del día</span>
+        <button class="switch on" id="remSwitch" type="button" role="switch" aria-checked="true" aria-label="Recordatorios"><span></span></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
     <div class="sec-lbl" id="lblData">Datos</div>
     <div class="card">
       <div class="stack">
@@ -868,7 +917,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <div class="card">
       <div class="row">
         <span class="row-lbl" id="lblVersion">Versión</span>
-        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev17 (2026-11-07)</span>
+        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev18 (2026-11-08)</span>
       </div>
       <div class="row">
         <button class="rowbtn" id="noticeBtn" type="button"><span id="lblNotice">Aviso</span><span>›</span></button>
@@ -919,6 +968,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
       <canvas id="paintCanvas"></canvas>
     </div>
   </div>
+  <div id="doneChip" class="off" role="status"><span class="done-masc" id="doneMasc" aria-hidden="true"></span><span class="done-txt" id="doneTxt"></span></div>
   <div class="cdock">
     <div class="cpill">
       <div class="ctools" id="cTools"></div>
@@ -982,7 +1032,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
   </section>
 
   <footer>
-    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev17 (2026-11-07)</div>
+    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev18 (2026-11-08)</div>
     <div class="seal">Crafted in NYC</div>
   </footer>
 </div>
@@ -1039,11 +1089,19 @@ function closePanels(){
   $("#bellPanel").classList.remove("on");
   $("#menuPanel").classList.remove("on");
 }
+function haptic(kind){
+  try{
+    if(!("vibrate" in navigator)) return;
+    if(kind === "strong") navigator.vibrate([15, 30, 40]);
+    else navigator.vibrate(10);
+  }catch(e){}
+}
 function togglePanel(id){
   const p = $(id);
   const was = p.classList.contains("on");
   closePanels();
   if(!was) p.classList.add("on");
+  haptic("soft");
 }
 function setLang(l){
   lang = l;
@@ -1077,8 +1135,28 @@ function stainHome(){
   cur.style.opacity = "0";
   stainVis = 1 - stainVis;
 }
+const VIEW_NAMES = ["home", "tiradas", "journal", "guia", "ajustes", "colorear"];
 function showView(name){
-  ["home", "tiradas", "journal", "guia", "ajustes", "colorear"].forEach(v => $("#view-" + v).classList.toggle("off", v !== name));
+  const rm = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const curEl = VIEW_NAMES.map(v => $("#view-" + v)).find(el => el && !el.classList.contains("off"));
+  const nextEl = $("#view-" + name);
+  if(curEl && nextEl && curEl !== nextEl && !rm){
+    const toHome = name === "home";
+    curEl.style.top = curEl.offsetTop + "px";
+    curEl.classList.add("view-leaving", toHome ? "view-out-right" : "view-out-left");
+    nextEl.classList.remove("off");
+    nextEl.classList.add(toHome ? "view-in-left" : "view-in-right");
+    setTimeout(() => {
+      if(curEl.classList.contains("view-leaving")){
+        curEl.classList.add("off");
+        curEl.classList.remove("view-leaving", "view-out-left", "view-out-right");
+        curEl.style.top = "";
+      }
+      nextEl.classList.remove("view-in-left", "view-in-right");
+    }, 320);
+  } else {
+    VIEW_NAMES.forEach(v => $("#view-" + v).classList.toggle("off", v !== name));
+  }
   if(name === "home"){
     pickedSection = false;
     stainHome();
@@ -1570,8 +1648,8 @@ function dealAll(){
   if(!cur || busy) return;
   while(dealt < cur.pos.es.length) dealOne();
 }
-$("#tDeckBtn").addEventListener("click", dealOne);
-$("#tRevealBtn").addEventListener("click", dealAll);
+$("#tDeckBtn").addEventListener("click", () => { haptic("strong"); dealOne(); });
+$("#tRevealBtn").addEventListener("click", () => { haptic("strong"); dealAll(); });
 $("#tShuffleBtn").addEventListener("click", () => {
   if(!cur || busy) return;
   busy = true;
@@ -1621,6 +1699,7 @@ $("#tSaveDlgSave").addEventListener("click", () => {
   addJournalEntry({type: "tirada", title: name || cur.name[lang], question: q,
     cards: drawnCards.map((c, i) => cur.pos[lang][i] + " · " + cardNameT(c)),
     text: synthFor(cur, drawnCards)});
+  haptic("strong");
   $("#tSaveDlg").classList.add("off");
   toast(I18N_T[lang].saved);
 });
@@ -1744,11 +1823,29 @@ function timeGroup(d){
   if(diff <= 7) return "semana";
   return "antes";
 }
+function mascotSVG(){
+  return '<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Perrito del Loco">'
+  + '<ellipse class="masc-shadow" cx="60" cy="93" rx="34" ry="5" fill="rgba(0,0,0,.16)"/>'
+  + '<path class="masc-tail" d="M42 68 C30 64 24 54 30 45 C34 40 39 43 38 49 C37 57 42 61 48 63 Z" fill="#7D9CA6" stroke="#111" stroke-width="2" stroke-linejoin="round"/>'
+  + '<path d="M40 90 C34 68 42 52 60 47 C78 42 92 54 92 70 C92 80 88 90 78 90 Z" fill="#7D9CA6" stroke="#111" stroke-width="2" stroke-linejoin="round"/>'
+  + '<path d="M50 62 l8 2 M48 72 l9 2 M52 82 l8 2" fill="none" stroke="#111" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>'
+  + '<path d="M74 88 L74 70" stroke="#111" stroke-width="2" stroke-linecap="round" opacity=".45"/>'
+  + '<path d="M60 54 Q72 60 86 53 L86 59 Q72 66 60 60 Z" fill="#E8B93C" stroke="#111" stroke-width="2" stroke-linejoin="round"/>'
+  + '<g class="masc-head">'
+  + '<path d="M64 34 L68 16 L78 28 Z" fill="#7D9CA6" stroke="#111" stroke-width="2" stroke-linejoin="round"/>'
+  + '<path d="M80 30 L88 14 L94 28 Z" fill="#7D9CA6" stroke="#111" stroke-width="2" stroke-linejoin="round"/>'
+  + '<circle cx="80" cy="38" r="15" fill="#7D9CA6" stroke="#111" stroke-width="2"/>'
+  + '<ellipse cx="92" cy="42" rx="8" ry="6" fill="#7D9CA6" stroke="#111" stroke-width="2"/>'
+  + '<ellipse cx="98" cy="38" rx="3" ry="2.4" fill="#111"/>'
+  + '<g class="masc-eye"><circle cx="80" cy="35" r="2.6" fill="#111"/></g>'
+  + '<path d="M90 48 Q94 51 98 47" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round"/>'
+  + '</g></svg>';
+}
 function renderListJ(){
   const t = I18N_J[lang];
   const list = journalEntries.filter(e => curFilter === "todas" || e.type === curFilter);
   if(!list.length){
-    $("#jEntryList").innerHTML = '<p class="empty">' + t.empty + "</p>";
+    $("#jEntryList").innerHTML = '<div class="masc-row masc-journal" aria-hidden="true">' + mascotSVG() + '</div><p class="empty">' + t.empty + "</p>";
     return;
   }
   const groups = [["hoy", t.today], ["ayer", t.yesterday], ["semana", t.week], ["antes", t.earlier]];
@@ -2038,7 +2135,7 @@ const I18N_S = {
     restore:"Restaurar respaldo", restoreToast:"Elige un archivo",
     delData:"Borrar datos", sDelConfirm:"¿Borrar todos los datos? No se puede deshacer.",
     sDelYes:"Borrar", cancel:"Cancelar", deleted:"Datos borrados",
-    about:"Acerca de", version:"Versión", notice:"Aviso",
+    about:"Acerca de", version:"Versión", notice:"Aviso", rem:"Recordatorios", remSw:"Campana y avisos de la carta del día",
     disclaimer:"El tarot es una herramienta de orientación y reflexión, no un consejo profesional médico, legal ni financiero.",
     bellLbl:"Recordatorio", bellDay:"Hoy · Día ", bellLine:"Tu carta de hoy te espera",
     menuToday:"Carta de hoy", menuProgress:"Mi progreso", menuSettings:"Ajustes",
@@ -2049,7 +2146,7 @@ const I18N_S = {
     restore:"Restore backup", restoreToast:"Choose a file",
     delData:"Delete data", sDelConfirm:"Delete all data? This can't be undone.",
     sDelYes:"Delete", cancel:"Cancel", deleted:"Data deleted",
-    about:"About", version:"Version", notice:"Notice",
+    about:"About", version:"Version", notice:"Notice", rem:"Reminders", remSw:"Bell and daily card notices",
     disclaimer:"Tarot is a tool for guidance and reflection, not professional medical, legal or financial advice.",
     bellLbl:"Reminder", bellDay:"Today · Day ", bellLine:"Your card for today awaits",
     menuToday:"Today's card", menuProgress:"My progress", menuSettings:"Settings",
@@ -2065,6 +2162,8 @@ function applyTextsS(){
   $("#segNightBtn").textContent = t.night;
   $("#lblLang").textContent = t.lang;
   $("#lblData").textContent = t.data;
+  $("#lblRem").textContent = t.rem;
+  $("#lblRemSw").textContent = t.remSw;
   $("#exportBtn").textContent = t.export;
   $("#restoreBtn").textContent = t.restore;
   $("#delDataBtn").textContent = t.delData;
@@ -2077,6 +2176,19 @@ function applyTextsS(){
   $("#disclaimer").textContent = t.disclaimer;
   fillBell(); fillMenuLabels();
 }
+const REM_KEY = "tarotReminders";
+function remindersOn(){ try{ return localStorage.getItem(REM_KEY) !== "0"; }catch(e){ return true; } }
+function applyReminders(){
+  const on = remindersOn();
+  const sw = $("#remSwitch"); if(sw){ sw.classList.toggle("on", on); sw.setAttribute("aria-checked", on ? "true" : "false"); }
+  const bb = $("#bellBtn"); if(bb) bb.style.display = on ? "" : "none";
+  if(!on){ const bp = $("#bellPanel"); if(bp) bp.classList.remove("on"); }
+}
+$("#remSwitch").addEventListener("click", () => {
+  try{ localStorage.setItem(REM_KEY, remindersOn() ? "0" : "1"); }catch(e){}
+  applyReminders();
+  haptic("soft");
+});
 $("#exportBtn").addEventListener("click", () => toast(I18N_S[lang].exportToast));
 $("#restoreBtn").addEventListener("click", () => toast(I18N_S[lang].restoreToast));
 $("#delDataBtn").addEventListener("click", () => { $("#sDelConfirm").classList.remove("off"); });
@@ -2193,15 +2305,33 @@ function makeThumbC(){
     return off.toDataURL("image/jpeg", 0.7);
   }catch(e){ return null; }
 }
+let doneChipTimer = null;
+function celebrateDoneC(){
+  haptic("strong");
+  const chip = $("#doneChip"); if(!chip) return;
+  const tx = $("#doneTxt"); if(tx) tx.textContent = I18N_C[lang].doneMsg;
+  chip.classList.remove("off");
+  const head = chip.querySelector(".masc-head");
+  if(head){ head.classList.remove("nod-once"); void head.getBoundingClientRect(); head.classList.add("nod-once"); }
+  clearTimeout(doneChipTimer);
+  doneChipTimer = setTimeout(() => chip.classList.add("off"), 2800);
+}
 function saveCardC(){
   const t = I18N_C[lang];
   const el = $("#cSavedLbl"); if(el) el.textContent = t.saving;
   try{
     const store = loadColorStore();
-    store[colorKeyC(canvasDeckC, canvasIdxC)] = {strokes: strokesC, thumb: makeThumbC(), cov: covPctC(), deck: canvasDeckC};
+    const key = colorKeyC(canvasDeckC, canvasIdxC);
+    const prevCov = (store[key] && store[key].cov) || 0;
+    const pct = covPctC();
+    store[key] = {strokes: strokesC, thumb: makeThumbC(), cov: pct, deck: canvasDeckC};
     localStorage.setItem(COLOR_KEY, JSON.stringify(store));
+    if(pct >= 90 && prevCov < 90) celebrateDoneC();
   }catch(e){}
-  if(el) el.textContent = t.savedAuto;
+  if(el){
+    el.innerHTML = t.savedAuto.replace("✓", '<span class="svchk">✓</span>');
+    el.classList.remove("save-pop"); void el.offsetWidth; el.classList.add("save-pop");
+  }
 }
 function scheduleSaveC(){ clearTimeout(saveTimerC); saveTimerC = setTimeout(saveCardC, 400); }
 function hexToRgb(h){ h = h.replace("#", ""); return [parseInt(h.substr(0, 2), 16), parseInt(h.substr(2, 2), 16), parseInt(h.substr(4, 2), 16)]; }
@@ -2228,6 +2358,7 @@ function setToolC(k){
   else { hideDropLoupe(); dropperDragC = null; }
   closePrismaC();
   renderToolsC();
+  haptic("soft");
 }
 function renderToolsC(){
   const t = I18N_C[lang];
@@ -2579,14 +2710,14 @@ const I18N_C = {
     backColor:"Volver a colorear", refNote:"Referencia · 4 cartas tienen lienzo por ahora", refMarsNote:"Referencia Rider a color: la versión Marsella llega después.",
     badge:"Lienzo", refLbl:"Referencia", refHint:"Toca la miniatura para ampliarla",
     expandRef:"Ampliar", hideRef:"Ocultar", showRef:"Mostrar referencia", toGallery:"Galería",
-    savedNote:"Coloreado en la app.", toolBrush:"Pincel", toolCrayon:"Color", toolMarker:"Rotulador", toolEraser:"Borrador", wFine:"Fino", wMed:"Medio", wThick:"Grueso", galleryTitle:"Mi Baraja", of22:"de 22", dayCard:"Carta del día", dayHint:"Toca para colorearla", dayNoCanvas:"La carta del día aún no tiene lienzo; aquí está su referencia", todayMark:"Hoy", keepColoring:"Seguir coloreando", startOver:"Empezar de nuevo", startOverQ:"¿Seguir coloreando o empezar de nuevo?", startOverConfirm:"Se borrarán todos los cambios y avances que hayas hecho en esta carta. ¿Estás seguro?", cancel:"Cancelar", confirmReset:"Sí, empezar de nuevo", resetDone:"Lienzo limpio. A colorear de nuevo.", savedAuto:"Guardado ✓", saving:"Guardando…", dropEmpty:"Aquí no hay pintura que copiar", dropCopied:"Color copiado", toolDropper:"Gotero", toolFill:"Relleno", wellLbl:"Elegir color", backGallery:"Volver a la galería", galleryHint:"Desliza para ver los 22 arcanos", refOpen:"Referencia abierta", refClosed:"Referencia cerrada"},
+    savedNote:"Coloreado en la app.", toolBrush:"Pincel", toolCrayon:"Color", toolMarker:"Rotulador", toolEraser:"Borrador", wFine:"Fino", wMed:"Medio", wThick:"Grueso", galleryTitle:"Mi Baraja", of22:"de 22", dayCard:"Carta del día", dayHint:"Toca para colorearla", dayNoCanvas:"La carta del día aún no tiene lienzo; aquí está su referencia", todayMark:"Hoy", keepColoring:"Seguir coloreando", startOver:"Empezar de nuevo", startOverQ:"¿Seguir coloreando o empezar de nuevo?", startOverConfirm:"Se borrarán todos los cambios y avances que hayas hecho en esta carta. ¿Estás seguro?", cancel:"Cancelar", confirmReset:"Sí, empezar de nuevo", resetDone:"Lienzo limpio. A colorear de nuevo.", savedAuto:"Guardado ✓", saving:"Guardando…", doneMsg:"✓ ¡Carta completada!", dropEmpty:"Aquí no hay pintura que copiar", dropCopied:"Color copiado", toolDropper:"Gotero", toolFill:"Relleno", wellLbl:"Elegir color", backGallery:"Volver a la galería", galleryHint:"Desliza para ver los 22 arcanos", refOpen:"Referencia abierta", refClosed:"Referencia cerrada"},
   en: {title:"Coloring", sub:"Color the cards, one per day", gallery:"Gallery · 22 arcana",
     canvasNote:"Touch and drag to paint", undo:"Undo", clear:"Clear", save:"Save",
     saved:"Saved to Journal", cleared:"Canvas cleared", undone:"Undone", nothingUndo:"Nothing to undo", redo:"Redo", redone:"Redone", nothingRedo:"Nothing to redo", saveImg:"Save image", exportHint:"Long-press the image to save it", colored:"Colored",
     backColor:"Back to coloring", refNote:"Reference · 4 cards have a canvas for now", refMarsNote:"Rider color reference: the Marseille version comes later.",
     badge:"Canvas", refLbl:"Reference", refHint:"Tap the thumbnail to enlarge it",
     expandRef:"Enlarge", hideRef:"Hide", showRef:"Show reference", toGallery:"Gallery",
-    savedNote:"Colored in the app.", toolBrush:"Brush", toolCrayon:"Crayon", toolMarker:"Marker", toolEraser:"Eraser", wFine:"Fine", wMed:"Medium", wThick:"Thick", galleryTitle:"My Deck", of22:"of 22", dayCard:"Card of the day", dayHint:"Tap to color it", dayNoCanvas:"Today's card has no canvas yet; here is its reference", todayMark:"Today", keepColoring:"Keep coloring", startOver:"Start over", startOverQ:"Keep coloring or start over?", startOverConfirm:"All the changes and progress you have made on this card will be erased. Are you sure?", cancel:"Cancel", confirmReset:"Yes, start over", resetDone:"Canvas cleared. Color it again.", savedAuto:"Saved ✓", saving:"Saving…", dropEmpty:"No paint here to copy", dropCopied:"Color copied", toolDropper:"Eyedropper", toolFill:"Fill", wellLbl:"Choose color", backGallery:"Back to gallery", galleryHint:"Scroll to see all 22 arcana", refOpen:"Reference open", refClosed:"Reference closed"}
+    savedNote:"Colored in the app.", toolBrush:"Brush", toolCrayon:"Crayon", toolMarker:"Marker", toolEraser:"Eraser", wFine:"Fine", wMed:"Medium", wThick:"Thick", galleryTitle:"My Deck", of22:"of 22", dayCard:"Card of the day", dayHint:"Tap to color it", dayNoCanvas:"Today's card has no canvas yet; here is its reference", todayMark:"Today", keepColoring:"Keep coloring", startOver:"Start over", startOverQ:"Keep coloring or start over?", startOverConfirm:"All the changes and progress you have made on this card will be erased. Are you sure?", cancel:"Cancel", confirmReset:"Yes, start over", resetDone:"Canvas cleared. Color it again.", savedAuto:"Saved ✓", saving:"Saving…", doneMsg:"✓ Card completed!", dropEmpty:"No paint here to copy", dropCopied:"Color copied", toolDropper:"Eyedropper", toolFill:"Fill", wellLbl:"Choose color", backGallery:"Back to gallery", galleryHint:"Scroll to see all 22 arcana", refOpen:"Reference open", refClosed:"Reference closed"}
 };
 function cardNameC(i){ return lang === "en" ? NAMES_EN[i] : NAMES_ES[i]; }
 /* ---------- Pintura real (v1.6): trazo libre con 3 texturas; touch-action:none evita el scroll ---------- */
@@ -3076,8 +3207,10 @@ document.querySelector(".today-arrow").addEventListener("click", () => { showVie
 const INITIAL_JOURNAL = SAMPLE_JOURNAL.map(e => ({...e, date: new Date(e.date)}));
 $("#todayImg").src = THUMBS[dayIdxC()];
 renderJourney(); applyTextsH(); fillBell(); fillMenuLabels();
-applyTextsT(); applyTextsJ(); renderAllJ(); applyTextsG(); applyTextsS();
+applyTextsT(); applyTextsJ(); renderAllJ(); applyTextsG(); applyTextsS(); applyReminders();
 applyTextsC(); updateSizeC(); showGalleryC();
+const hm = $("#homeMascot"); if(hm) hm.innerHTML = mascotSVG();
+const dm = $("#doneMasc"); if(dm) dm.innerHTML = mascotSVG();
 stainCurrent = -2; /* que stainHome() sí aplique la mancha gris al cargar */
 showView('home');
 

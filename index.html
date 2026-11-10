@@ -3,34 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tarot · Viaje del Loco — junta v1.14-dev22 (2026-11-08)</title>
+<title>Tarot · Viaje del Loco — junta v1.14-dev24 (2026-11-09)</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#fff;color:#111}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
 .paper{position:fixed;inset:0;pointer-events:none;z-index:0;background:#fff;filter:url(#paperGrain)}
 .stain{position:fixed;inset:0;pointer-events:none;z-index:0;background-size:cover;background-position:top center;background-repeat:no-repeat;opacity:0;transition:opacity .6s ease;-webkit-mask-image:linear-gradient(to bottom,#000 70%,transparent 100%);mask-image:linear-gradient(to bottom,#000 70%,transparent 100%)}
-.page{position:relative;z-index:1;max-width:430px;margin:0 auto;padding:12px 16px 12px;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
-header{position:relative;flex:none;padding:2px 4px 8px}
+.page{position:relative;z-index:1;max-width:430px;margin:0 auto;padding:20px 16px 28px}
+header{position:relative;padding:2px 4px 14px}
 .ver{font-size:13px;font-weight:700;letter-spacing:.02em}
 .brand{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8A8578;margin-top:5px}
-#view-home{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden}
-.journey{flex:none;position:relative;margin-top:10px;background:#fff;border:2px solid #111;border-radius:22px;padding:14px 16px 12px}
+.journey{position:relative;margin-top:22px;background:#fff;border:2px solid #111;border-radius:22px;padding:20px 20px 18px}
 .journey .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#8A8578;font-weight:700}
-.journey-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-top:8px}
-.journey-title{font-size:28px;line-height:1.05;font-weight:800;letter-spacing:-.01em}
-.journey-pill{flex:none;background:#111;color:#FDFBF6;border-radius:999px;padding:10px 14px;text-align:center;font-size:11px;font-weight:800;letter-spacing:.08em;line-height:1.35}
-.journey-num{margin-top:10px;font-size:22px;font-weight:800}
+.journey-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-top:10px}
+.journey-title{font-size:34px;line-height:1.05;font-weight:800;letter-spacing:-.01em}
+/* v1.14-dev24: distintivo 22 DÍAS subido para centrarlo con el título (mockup v10) */
+.journey-pill{flex:none;background:#111;color:#FDFBF6;border-radius:999px;padding:10px 14px;text-align:center;font-size:11px;font-weight:800;letter-spacing:.08em;line-height:1.35;transform:translateY(-10px)}
+.journey-num{margin-top:18px;font-size:22px;font-weight:800}
 .journey-num span{color:#8A8578;font-weight:700}
 .journey-tag{margin-top:6px;font-size:14px;color:#6E675A;line-height:1.45}
-.journey-bar{margin-top:10px;height:10px;border-radius:999px;background:#E8E4D8;overflow:hidden}
+.journey-bar{margin-top:18px;height:10px;border-radius:999px;background:#E8E4D8;overflow:hidden}
 .journey-bar i{display:block;height:100%;border-radius:999px;background:#EC1C8C}
-.journey-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.journey-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
 .journey-foot .lbl{font-size:11px;letter-spacing:.16em;color:#8A8578;font-weight:700}
 .journey-foot .go{font-size:13px;font-weight:800;letter-spacing:.06em}
-.today-lbl{flex:none;margin:12px 4px 6px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#8A8578;font-weight:700}
-.today-card{flex:none;background:#111;border:2px solid #111;border-radius:22px;padding:12px;display:flex;gap:12px;align-items:center}
-.today-motif{flex:none;width:52px}
+.today-lbl{margin:24px 4px 10px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#8A8578;font-weight:700}
+.today-card{background:#111;border:2px solid #111;border-radius:22px;padding:18px;display:flex;gap:14px;align-items:center}
+.today-motif{flex:none;width:64px}
 .today-motif svg{display:block;width:100%;height:auto}
 .today-text{flex:1;min-width:0}
 .today-text .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#8A8578;font-weight:700}
@@ -38,9 +38,9 @@ header{position:relative;flex:none;padding:2px 4px 8px}
 .today-text .mean{font-size:13px;color:#B9B3A6;margin-top:5px;line-height:1.45}
 .today-arrow{flex:none;width:52px;height:52px;border-radius:50%;background:#EC1C8C;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .today-arrow svg{display:block}
-.wheelzone{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center;padding:8px 0 4px;text-align:center}
-.wheel-wrap{position:relative;flex:1 1 auto;min-height:0;max-height:230px;aspect-ratio:1/1;align-self:center}
-.wheel{position:relative;z-index:1;display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.wheelzone{padding:26px 0 6px;text-align:center}
+.wheel-wrap{position:relative;width:230px;height:230px;margin:0 auto}
+.wheel{position:relative;z-index:1;display:block;width:230px;height:230px;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
 .wheel:active{cursor:grabbing}
 .wheel-rotor{transition:transform .65s cubic-bezier(.22,1,.36,1);transform-box:view-box;transform-origin:150px 150px}
 .seg path{fill:#fff;stroke:#111;stroke-width:1.2}
@@ -63,17 +63,17 @@ header{position:relative;flex:none;padding:2px 4px 8px}
 .seg[data-i="1"] .seg-ic circle.tpent,.seg[data-i="1"] .seg-ic path.tpent{fill:none;stroke:#111;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
 .seg[data-i="1"].on .seg-ic-on rect.tcard{fill:#111;stroke:#FFFFFF;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .seg[data-i="1"].on .seg-ic-on circle.tpent,.seg[data-i="1"].on .seg-ic-on path.tpent{fill:none;stroke:#FFFFFF;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
-.wheel-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:56%;height:56%;border-radius:50%;background:#FDFBF6;border:3px solid #111;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;z-index:2}
-.wheel-hub::before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:203%;height:203%;border-radius:50%;pointer-events:none;z-index:-1;background:radial-gradient(circle,rgba(232,168,32,.30) 0%,rgba(232,168,32,.14) 35%,rgba(232,168,32,0) 75%);filter:blur(8px)}
-.wheel-hub b{font-size:14px;line-height:1.15}
-.wheel-hub span{font-size:10px;color:#6E675A;margin-top:4px;line-height:1.35}
-.wheel-dots{flex:none;display:flex;gap:8px;justify-content:center;margin:10px 0 6px}
+.wheel-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:128px;height:128px;border-radius:50%;background:#FDFBF6;border:3px solid #111;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;z-index:2}
+.wheel-hub::before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:260px;height:260px;border-radius:50%;pointer-events:none;z-index:-1;background:radial-gradient(circle,rgba(232,168,32,.30) 0%,rgba(232,168,32,.14) 35%,rgba(232,168,32,0) 75%);filter:blur(8px)}
+.wheel-hub b{font-size:16px;line-height:1.15}
+.wheel-hub span{font-size:11px;color:#6E675A;margin-top:5px;line-height:1.35}
+.wheel-dots{display:flex;gap:8px;justify-content:center;margin:16px 0 8px}
 .wheel-dots i{width:8px;height:8px;border-radius:50%;background:#C9C2B2}
 .wheel-dots i.on{transform:scale(1.3);background:#111}
-.wheel-hint{flex:none;font-size:12px;color:#8A8578;line-height:1.5}
-footer{flex:none;margin-top:10px;padding-top:8px;border-top:1px solid #D8D2C4;text-align:center}
+.wheel-hint{font-size:12px;color:#8A8578;line-height:1.5}
+footer{margin-top:26px;padding-top:14px;border-top:1px solid #D8D2C4;text-align:center}
 footer .note{font-size:12px;color:#8A8578}
-footer .seal{font-size:11px;color:#8A8578;margin-top:4px;letter-spacing:.08em}
+footer .seal{font-size:11px;color:#8A8578;margin-top:6px;letter-spacing:.08em}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .topbar-brand{font-size:13px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
 .topbar-group{display:flex;align-items:center;gap:10px}
@@ -428,8 +428,9 @@ html,body{overflow-x:hidden}
 .switch.on{background:#56A100}
 .switch.on span{left:24px}
 .masc-row{display:flex;justify-content:center;padding:8px 0 2px}
-#homeMascot{flex:none;padding:4px 0 0}
-#homeMascot svg{width:60px;height:auto;display:block}
+/* v1.14-dev24: mascota asomándose por detrás del borde derecho del progreso (mockup v10) */
+.journey-masc{position:absolute;z-index:2;right:-16px;top:83px;width:54px;pointer-events:none}
+.journey-masc svg{display:block;width:100%;height:auto}
 .masc-row svg{width:84px;height:auto;display:block}
 .masc-tail{transform-box:fill-box;transform-origin:85% 85%}
 .masc-eye{transform-box:fill-box;transform-origin:center}
@@ -694,6 +695,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
       <span class="lbl" id="journeyFootLbl">Twenty two day journey</span>
       <span class="go" id="journeyGo">SIGUE →</span>
     </div>
+    <div class="masc-intro journey-masc" id="journeyMascot" aria-hidden="true"></div>
   </section>
 
   <div class="today-lbl" id="todayLbl">Hoy</div>
@@ -723,7 +725,6 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <p class="wheel-hint" id="wheelHint">Arrastra para girar · toca un segmento para subirlo.<br>Toca el centro para entrar en la sección.</p>
   </section>
 
-  <div class="masc-row masc-intro" id="homeMascot" aria-hidden="true"></div>
   </section>
 
   <section id="view-tiradas" class="off">
@@ -920,7 +921,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
     <div class="card">
       <div class="row">
         <span class="row-lbl" id="lblVersion">Versión</span>
-        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev22 (2026-11-08)</span>
+        <span class="row-val">Tarot · Viaje del Loco — junta v1.14-dev24 (2026-11-09)</span>
       </div>
       <div class="row">
         <button class="rowbtn" id="noticeBtn" type="button"><span id="lblNotice">Aviso</span><span>›</span></button>
@@ -1035,7 +1036,7 @@ body.night .ctop-back{background:#1E1E1E;color:#FDFBF6;border-color:#FDFBF6}
   </section>
 
   <footer>
-    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev22 (2026-11-08)</div>
+    <div class="note">Tarot · Viaje del Loco — junta v1.14-dev24 (2026-11-09)</div>
     <div class="seal">Crafted in NYC</div>
   </footer>
 </div>
@@ -1847,6 +1848,27 @@ function mascotSVG(){
   + '<ellipse cx="98" cy="38" rx="3" ry="2.4" fill="#111"/>'
   + '<g class="masc-eye"><circle cx="80" cy="35" r="2.6" fill="#111"/></g>'
   + '<path d="M90 48 Q94 51 98 47" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round"/>'
+  + '</g></svg>';
+}
+/* v1.14-dev24: cabecita + patitas de la mascota asomándose por detrás del borde del progreso (mockup v10). Deriva de mascotSVG(): misma cabeza y collar, espejados para mirar a la izquierda; el cuerpo queda detrás de la tarjeta (no se dibuja). El guiño lo da la regla .masc-intro .masc-eye (mascWink 6s) ya existente. */
+function mascotPeekSVG(){
+  return '<svg viewBox="15 10 50 78" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Perrito del Loco asomándose">'
+  + '<g transform="translate(120,0) scale(-1,1)">'
+  + '<g class="masc-head">'
+  + '<path d="M64 34 L68 16 L78 28 Z" fill="#7D9CA6" stroke="#111" stroke-width="2" stroke-linejoin="round"/>'
+  + '<path d="M80 30 L88 14 L94 28 Z" fill="#7D9CA6" stroke="#111" stroke-width="2" stroke-linejoin="round"/>'
+  + '<circle cx="80" cy="38" r="15" fill="#7D9CA6" stroke="#111" stroke-width="2"/>'
+  + '<ellipse cx="92" cy="42" rx="8" ry="6" fill="#7D9CA6" stroke="#111" stroke-width="2"/>'
+  + '<ellipse cx="98" cy="38" rx="3" ry="2.4" fill="#111"/>'
+  + '<g class="masc-eye"><circle cx="80" cy="35" r="2.6" fill="#111"/></g>'
+  + '<path d="M90 48 Q94 51 98 47" fill="none" stroke="#111" stroke-width="1.8" stroke-linecap="round"/>'
+  + '</g>'
+  + '<path d="M60 54 Q72 60 86 53 L86 59 Q72 66 60 60 Z" fill="#E8B93C" stroke="#111" stroke-width="2" stroke-linejoin="round"/>'
+  + '</g>'
+  + '<g class="masc-paws">'
+  + '<ellipse cx="38" cy="75" rx="7" ry="9" fill="#7D9CA6" stroke="#111" stroke-width="2"/>'
+  + '<ellipse cx="52" cy="75" rx="7" ry="9" fill="#7D9CA6" stroke="#111" stroke-width="2"/>'
+  + '<path d="M38 69 L38 79 M52 69 L52 79" fill="none" stroke="#111" stroke-width="1.6" stroke-linecap="round" opacity=".5"/>'
   + '</g></svg>';
 }
 function renderListJ(){
@@ -3248,7 +3270,7 @@ $("#todayImg").src = THUMBS[dayIdxC()];
 renderJourney(); applyTextsH(); fillBell(); fillMenuLabels();
 applyTextsT(); applyTextsJ(); renderAllJ(); applyTextsG(); applyTextsS(); applyReminders();
 applyTextsC(); updateSizeC(); showGalleryC();
-const hm = $("#homeMascot"); if(hm) hm.innerHTML = mascotSVG();
+const jm = $("#journeyMascot"); if(jm) jm.innerHTML = mascotPeekSVG();
 const dm = $("#doneMasc"); if(dm) dm.innerHTML = mascotSVG();
 stainCurrent = -2; /* que stainHome() sí aplique la mancha gris al cargar */
 showView('home');
